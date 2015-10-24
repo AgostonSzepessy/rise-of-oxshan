@@ -10,8 +10,96 @@
          "width":50,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":0,
+         "name":"player",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":92,
+                 "y":1037
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":2,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":219,
+                 "y":997
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":20,
+         "name":"enemies",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":735,
+                 "y":1018
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":4,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2407,
+                 "y":1063
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "properties":
     {

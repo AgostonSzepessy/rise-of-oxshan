@@ -153,6 +153,7 @@ function Resource(resId, res) {
 	this.resource = res;
 }
 
+// Keeps track of resources. Each resource is stored with a key.
 function ResourceManager() {
 	'use strict';
 	this.images = [];
@@ -206,6 +207,10 @@ function setInitialState() {
 
 // The camera that follows the player around. It helps draw objects in the
 // proper place. It's origin is in the upper left corner.
+// camX - starting x coordinate
+// camY - starting y coordinate
+// camWidth - the width of the camera viewport
+// camHeight - the height of the camera viewport
 function Camera(camX, camY, camWidth, camHeight) {
 	this.positionX = camX;
 	this.positionY = camY;
@@ -214,13 +219,9 @@ function Camera(camX, camY, camWidth, camHeight) {
 	this.width = camWidth;
 	this.height = camHeight;
 }
-// Set the properties of the camera such as position, width & height,
-// and boundaries.
-// camX - starting x coordinate
-// camY - starting y coordinate
-// camWidth - the width of the camera viewport
-// camHeight - the height of the camera viewport
 
+// Sets the boundaries of the camera. It cannot go past these bounds. It is
+// assumed that (0, 0) is the boundary from the left side.
 Camera.prototype.setBounds = function(camXBounds, camYBounds) {
 	this.xBounds = camXBounds;
 	this.yBounds = camYBounds;
@@ -277,6 +278,58 @@ Camera.prototype.checkBounds = function() {
 	}
 };
 
+function AnimationFrame() {
+	this.positionX = 0;
+	this.positionY = 0;
+	this.width = 0;
+	this.height = 0;
+}
+
+function Entity() {
+	this.positionX = 0;
+	this.positionY = 0;
+	this.dx = 0;
+	this.dy = 0;
+	this.acceleration = 0;
+	this.maxVelocity = 0;
+	this.tileMap = null;
+	this.animationPositions = [];
+	this.height = 0;
+	this.width = 0;
+	this.gravity = 9;
+	this.texture = null;
+}
+
+Entity.prototype.setPosition = function(x, y) {
+	this.positionX = x;
+	this.positionY = y;
+};
+
+Entity.prototype.getX = function() {
+	return this.positionX;
+};
+
+Entity.prototype.getY = function() {
+	return this.positionY;
+};
+
+Entity.prototype.getHeight = function() {
+	return this.height;
+};
+
+Entity.prototype.getWidth = function() {
+	return this.width;
+};
+
+function Player(tileMap) {
+	Entity.call();
+	
+	this.positionX = 30;
+	
+}
+
+Player.prototype = new Entity();
+
 function Tile(tileWidth, tileHeight, tileType, tileImgXPosition, tileImgYPosition) {
 	this.width = tileWidth;
 	this.height = tileHeight;
@@ -304,10 +357,6 @@ function TileMapLayer(mapWidth, mapHeight, tileWidth, tileHeight, layerName,
 	this.width = mapWidth;
 	this.height = mapHeight;
 	
-	console.log(tileWidth);
-	
-	// there are only two types of tiles and 1 has to be added b/c blank tiles
-	// aren't part of the tileset
 	this.tiles = [];
 	this.data = tileData;
 	this.tileHeight = tileHeight;
@@ -316,11 +365,11 @@ function TileMapLayer(mapWidth, mapHeight, tileWidth, tileHeight, layerName,
 	// The tileset that makes up the tilemap
 	this.tileSet = Game.res.getImage('tileSet');
 	
-	
-	// An array of integers used to figure out whether there is a tile in the
-	// player's position
+	// An array of integers used to figure out whether there is a tile where the
+	// player is
 	this.map = [];
 	
+	// copy data into the map
 	for(var count = 0; count < tileData.length; ++count) {
 		this.map.push(tileData[count]);
 	}
@@ -334,6 +383,7 @@ function TileMapLayer(mapWidth, mapHeight, tileWidth, tileHeight, layerName,
 		}
 	}
 	
+	// add a blank tile to the beginning because 0 means no tile is drawn
 	this.tiles.splice(0, 0, new Tile(this.tileWidth, this.tileHeight, Tile.UNBLOCKED, 0, 0));	
 	
 }
@@ -343,14 +393,12 @@ TileMapLayer.prototype.getTile = function(x, y) {
 };
 
 TileMapLayer.prototype.draw = function(camera) {
-//	ctx.drawImage(this.tileSet, canvasWidth / 2, canvasHeight / 2);
 	// where to start drawing the tiles. Draw 1 more on each side to cover up
 	// all empty places
 	var startX = (camera.positionX / this.tileWidth - 1);
 	
 	if(startX < 0) startX = 0;
 	
-//	console.log(startX);
 	
 	var endX = ((camera.positionX + camera.width) / this.tileWidth + 1);
 	if(endX > this.width) endX = this.width;
@@ -364,7 +412,7 @@ TileMapLayer.prototype.draw = function(camera) {
 	for(var row = 0; row < this.height; ++row) {
 		for(var col = 0; col < this.width; ++col) {
 			var tileId = this.map[this.width * row + col];
-			if(tileId != 0) {
+			if(tileId !== 0) {
 				var t = this.tiles[tileId];
 				camera.draw(this.tileSet, col * this.tileWidth, row * this.tileHeight,
 					   this.tileWidth, this.tileHeight, t.imgXPosition, t.imgYPosition);
@@ -372,22 +420,33 @@ TileMapLayer.prototype.draw = function(camera) {
 		}
 	}
 	
-//	camera.draw(this.tileSet, canvasWidth / 2, canvasHeight / 2, 320, 192, 0, 0);
 	ctx.closePath();
 };
 
-function TileMapObject() {
+// A TileMapObject can be anything on the tilemap. For example, it could be
+// coins, or enemies.
+function TileMapObject(positionX, positionY, objId) {
 	'use strict';
+	this.positionX = positionX;
+	this.positionY = positionY;
+	this.id = objId;
+}
+
+function TileMapObjectLayer(layerName) {
+	'use strict';
+	this.name = layerName;
+	this.objects = [];
 	
 }
 
-function TileMapObjectLayer() {
-	'use strict';
-}
+TileMapObjectLayer.prototype.addObject = function(tileObj) {
+	this.objects.push(tileObj);
+};
 
 function TileMap() {
 	'use strict';
 	this.mapLayers = [];
+	this.objectLayers = [];
 }
 
 TileMap.prototype.loadFile = function(pathToFile, callback) {
@@ -403,6 +462,7 @@ TileMap.prototype.loadFile = function(pathToFile, callback) {
 			var lvlHeight = levelData.height;
 			var lvlWidth = levelData.width;
 			
+			// tilemap tile data
 			var tilesets = levelData.tilesets;
 			var tilesetWidth = tilesets[0].imagewidth;
 			var tilesetHeight = tilesets[0].imageheight;
@@ -410,23 +470,33 @@ TileMap.prototype.loadFile = function(pathToFile, callback) {
 			var tileHeight = levelData.tilesets[0].tileheight;
 			var tileCount = levelData.tilesets[0].tilecount;
 			
-			
-			Game.res.addImage('tileSet', '/platformer/res/maps/' + tilesets[0].image);
+			Game.res.addImage('tileSet', '/rise-of-oxshan/res/maps/' + tilesets[0].image);
 			
 			var layers = levelData.layers;
 			
-//			for(var j = 0; j < levelData.layers[0].data.length; ++j) {
-//				console.log(levelData.layers[0].data[j]);
-//			}
-			
 			for(var i = 0; i < layers.length; ++i) {
-				that.mapLayers.push(new TileMapLayer(lvlWidth, lvlHeight,
-													tileWidth, tileHeight, 
-													layers[i].name, tilesetWidth,
-													tilesetHeight, tileCount, layers[i].data));
+				// check whether the layer is a tile layer or object layer
+				if(layers[i].type === 'tilelayer') {
+					that.mapLayers.push(new TileMapLayer(lvlWidth, lvlHeight,
+														tileWidth, tileHeight,
+														layers[i].name, tilesetWidth,
+														tilesetHeight, 
+														 tileCount, layers[i].data));
+				}
+				else if(layers[i].type === 'objectgroup') {
+					var layerName = layers[i].name;
+					var objects = layers[i].objects;
+					that.objectLayers.push(new TileMapObjectLayer(layerName));
+					for(var obj = 0; obj < objects.length; ++obj) {
+						// get object's x and y position, and it's id
+						that.objectLayers[that.objectLayers.length - 1].addObject(
+														new TileMapObject(
+														objects[obj].x,
+														objects[obj].y,
+														objects[obj].id));
+					}
+				}
 			}
-			
-//			console.log(layers[0].height);
 			
 			Game.levelLoaded = true;
 			
@@ -467,12 +537,12 @@ function MenuState() {
 	this.selectorImgHeight = 12;
 	this.selectorImgWidth = 12;
 	this.selectorImg = new Image(this.selectorImgWidth, this.selectorImgHeight);
-	this.selectorImg.src = '/platformer/res/grey_dot.png';
+	this.selectorImg.src = '/rise-of-oxshan/res/grey_dot.png';
 	
 	this.textWidth = 40;
 	this.textHeight = 21;
 	this.menuTextImg = new Image(this.textWidth, this.textHeight);
-	this.menuTextImg.src = '/platformer/res/menu-text.png';
+	this.menuTextImg.src = '/rise-of-oxshan/res/menu-text.png';
 }
 
 function PlayState() {
@@ -483,13 +553,12 @@ function PlayState() {
 	this.camera = new Camera(0, 0, canvasWidth, canvasHeight);
 	this.camera.setHeight(canvasHeight);
 	this.camera.setWidth(canvasWidth);
-	console.log(this.camera);
 	
 	this.tileMap = new TileMap();
 	
 	this.tileMap = new TileMap();
 	var that = this;
-	this.tileMap.loadFile('/platformer/res/maps/level-1.json', function() {
+	this.tileMap.loadFile('/rise-of-oxshan/res/maps/level-1.json', function() {
 		that.continueLoadingLevel();
 	});
 		
@@ -580,12 +649,7 @@ PlayState.prototype.update = function () {
 PlayState.prototype.draw = function () {
     'use strict';
     clear('#655541');
-//	console.log('drawing tilemap');
 	this.tileMap.draw(this.camera);
-//	this.camera.draw(this.tileMap.mapLayers[0].tileSet, 40, 40, 
-//					 this.tileMap.mapLayers[0].tiles[2].width, this.tileMap.mapLayers[0].tiles[2].height,
-//					this.tileMap.mapLayers[0].tiles[2].imgXPosition,
-//					this.tileMap.mapLayers[0].tiles[2].imgYPosition);
 };
 
 
