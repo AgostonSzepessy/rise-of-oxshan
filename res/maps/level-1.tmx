@@ -1011,14 +1011,8 @@
   <object id="1" x="92" y="1037">
    <ellipse/>
   </object>
-  <object id="2" x="219" y="997">
-   <ellipse/>
-  </object>
  </objectgroup>
  <objectgroup name="enemies">
-  <object id="3" x="735" y="1018">
-   <ellipse/>
-  </object>
   <object id="4" x="2407" y="1063">
    <ellipse/>
   </object>

@@ -31,22 +31,6 @@
                  "width":0,
                  "x":92,
                  "y":1037
-                }, 
-                {
-                 "ellipse":true,
-                 "height":0,
-                 "id":2,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":219,
-                 "y":997
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -57,25 +41,9 @@
         }, 
         {
          "draworder":"topdown",
-         "height":20,
+         "height":0,
          "name":"enemies",
          "objects":[
-                {
-                 "ellipse":true,
-                 "height":0,
-                 "id":3,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":735,
-                 "y":1018
-                }, 
                 {
                  "ellipse":true,
                  "height":0,
@@ -95,7 +63,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":50,
+         "width":0,
          "x":0,
          "y":0
         }],

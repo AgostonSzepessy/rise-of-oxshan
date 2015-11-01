@@ -1,0 +1,12 @@
+{
+	"globals": { "Game": true,
+                 "Key": true,
+                 "ctx": true,
+                 "clear": true,
+                 "canvasWidth": true,
+                 "canvasHeight": true,
+                 "Camera": true,
+                 "TileMap": true,
+                 "Player": true
+               }
+}
