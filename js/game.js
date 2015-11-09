@@ -4,7 +4,7 @@
 // GameState - base class for each state of the game (menu, playing, etc)
 function GameState() {'use strict'; }
 
-GameState.prototype.update = function() {'use strict'; };
+GameState.prototype.update = function(dt) {'use strict'; };
 GameState.prototype.draw = function() {'use strict'; };
 
 // create game states
@@ -55,13 +55,13 @@ function PlayState() {
 // MenuState - the main menu
 MenuState.prototype = new GameState();
 
-MenuState.prototype.update = function () {
+MenuState.prototype.update = function(dt) {
     'use strict';
     
 	this.handleInput();
 };
 
-MenuState.prototype.draw = function () {
+MenuState.prototype.draw = function() {
     'use strict';
 	var i;
 	
@@ -128,17 +128,12 @@ PlayState.prototype.continueLoadingLevel = function() {
 						  this.tileMap.mapLayers[0].tileHeight);
 	this.player.setPosition(this.tileMap.getLayer('player').objects[0].positionX,
 							this.tileMap.getLayer('player').objects[0].positionY);
-//							704);
+
 	console.log(this.tileMap.getLayer('player').objects[0].positionY);
 	console.log(this.camera.positionY);
-	
-//	console.log(this.tileMap.mapLayers[0].height * 
-//							this.tileMap.mapLayers[0].tileHeight);
-//	console.log(this.tileMap.mapLayers[0].height);
-	
 };
 
-PlayState.prototype.update = function () {
+PlayState.prototype.update = function(dt) {
     'use strict';
 	
     if (Key.isKeyPressed(Key.SPACE)) {
@@ -146,17 +141,17 @@ PlayState.prototype.update = function () {
     }
 	
 	if(Game.levelLoaded) {
-		this.player.update(this.camera);
+		this.player.update(dt);
 		this.camera.checkBounds();
 	}
 	
 };
 
-PlayState.prototype.draw = function () {
+PlayState.prototype.draw = function() {
     'use strict';
     clear('#655541');
 	this.tileMap.draw(this.camera);
-	this.player.draw(this.camera);
+	this.player.draw(this.camera);	
 };
 
 
@@ -201,13 +196,11 @@ function storeImages(images) {
 function setInitialState() {
     'use strict';
     Game.gsm = new GameStateManager();
-    Game.lastTick = window.performance.now();
-    Game.tickLength = 1000 / FPS;
-    Game.lastRender = Game.lastTick;
 	Game.res = new ResourceManager();
 	Game.levelLoaded = false;
 	Game.time = 0;
 	Game.numFrames = 0;
+	Game.then = window.performance.now();
 
     window.addEventListener('keyup', function (event) { Key.onKeyUp(event); }, false);
     window.addEventListener('keydown', function (event) { Key.onKeyDown(event); }, false);
@@ -216,20 +209,16 @@ function setInitialState() {
 // start the game
 function startGame(images) {
     'use strict';
+	var time;
 	
     function main(tFrame) {
-        Game.stopMain = window.requestAnimationFrame(main);
-        var nextTick = Game.lastTick + Game.tickLength,
-        numTicks = 0;
+		window.requestAnimationFrame(main);
+		var now = window.performance.now();
+		var dt = now - (time || now);
+		time = now;
 
-        if (tFrame > nextTick) {
-            var timeSinceTick = tFrame - Game.lastTick;
-            numTicks = Math.floor(timeSinceTick / Game.tickLength);
-        }
-
-        Game.update(numTicks);
+        Game.update(dt);
         Game.draw();
-        Game.lastRender = tFrame;
     }
 
     setInitialState();

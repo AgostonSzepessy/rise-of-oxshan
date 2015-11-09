@@ -58,20 +58,27 @@ function Player() {
 	this.width = this.texture.width;
 	this.height = this.texture.height;
 	this.acceleration = 0.025;
-	this.maxVelocity = 0.075;
+	this.maxVelocity = 0.25;
+	this.maxFastVelocity = 0.75;
 }
 
-Player.prototype.update = function() {	
+Player.prototype.update = function(dt) {	
 	if(Key.isDown(Key.D)) {
 		this.dx += this.acceleration;
-		if(this.dx > this.maxVelocity) {
+		if(Key.isDown(Key.SHIFT)) {
+			if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
+		}
+		else if(!Key.isDown(Key.SHIFT) && this.dx > this.maxVelocity) {
 			this.dx = this.maxVelocity;
 		}
 	}
 	
 	else if(Key.isDown(Key.A)) {
 		this.dx -= this.acceleration;
-		if(this.dx < -this.maxVelocity) {
+		if(Key.isDown(Key.SHIFT)) {
+			if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
+		}
+		else if(!Key.isDown(Key.SHIFT) && this.dx < -this.maxVelocity) {
 			this.dx = -this.maxVelocity;
 		}
 	}
@@ -80,7 +87,7 @@ Player.prototype.update = function() {
 		this.dx = 0;
 	}
 	
-	this.positionX += this.dx;
+	this.positionX += this.dx * dt;
 	
 	if(this.positionX < 0) {
 		this.positionX = 0;
@@ -94,10 +101,8 @@ Player.prototype.update = function() {
 Player.prototype.draw = function(camera) {
 	camera.draw(this.texture, this.positionX, this.positionY, this.width,
 			   	this.height, 0, 0);
+	ctx.beginPath();
 	ctx.fillStyle = "white";
-		ctx.fillText('Player dx is ' + this.dx, 0, 10);
-//	ctx.beginPath();
-//	ctx.drawImage(this.texture, 0, 0, this.width, this.height, this.positionX,
-//				  this.positionY, this.width, this.height);
-//	ctx.closePath();
+	ctx.fillText('Player dx is ' + this.dx, 0, 10);
+	ctx.closePath();
 };

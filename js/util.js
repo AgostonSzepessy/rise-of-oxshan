@@ -70,7 +70,7 @@ GameStateManager.prototype.changeState = function(state) {
 };
 
 // Updates the current state.
-GameStateManager.prototype.update = function() {
+GameStateManager.prototype.update = function(dt) {
     'use strict';
 	
 	if(this.changingState) {
@@ -89,7 +89,7 @@ GameStateManager.prototype.update = function() {
 		this.states.pop();
 	}
 	
-    this.states[this.states.length - 1].update();
+    this.states[this.states.length - 1].update(dt);
 };
 
 // Draws the current state
@@ -110,6 +110,7 @@ var Key = {
     RIGHT: 39,
     SPACE: 32,
 	ENTER: 13,
+	SHIFT: 16,
 	W: 87,
 	A: 65,
 	S: 83,
@@ -182,19 +183,10 @@ ResourceManager.prototype.getImage = function(key) {
 
 var Game = { };
 
-Game.update = function(numTicks) {
+Game.update = function(dt) {
     'use strict';
-    var i;
-    for (i = 0; i < numTicks; ++i) {
-		Game.numFrames++;
-		Game.time += Game.tickLength;
-		if(Game.time > 1000) {
-//			console.log(Game.numFrames);
-			Game.time = Game.numFrames = 0;
-		}
-        Game.gsm.update();
-		Key.backupKeys();
-    }
+	Game.gsm.update(dt);
+	Key.backupKeys();
 };
 
 Game.draw = function() {
