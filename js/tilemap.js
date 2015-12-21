@@ -7,6 +7,8 @@ function Tile(tileWidth, tileHeight, tileType, tileImgXPosition, tileImgYPositio
 	this.type = tileType;
 	this.imgXPosition = tileImgXPosition;
 	this.imgYPosition = tileImgYPosition;
+	this.positionX = 0;
+	this.positionY = 0;
 }
 
 // tile types
@@ -59,8 +61,11 @@ function TileMapLayer(mapWidth, mapHeight, tileWidth, tileHeight, layerName,
 	
 }
 
-TileMapLayer.prototype.getTile = function(x, y) {
-	return this.tiles[this.map[y / this.tileHeight][x / this.tileWidth]];
+TileMapLayer.prototype.getTileType = function(x, y) {
+	var tempY = parseInt(y / this.tileHeight);
+	var tempX = parseInt(x / this.tileWidth);
+	
+	return this.tiles[this.map[this.width * tempY + tempX]].type;
 };
 
 TileMapLayer.prototype.draw = function(camera) {
@@ -121,10 +126,18 @@ function TileMap() {
 	this.objectLayers = [];
 }
 	
-TileMap.prototype.getLayer = function(layerName) {
+TileMap.prototype.getObjectLayer = function(layerName) {
 	for(var i = 0; i < this.objectLayers.length; ++i) {
 		if(this.objectLayers[i].name === layerName) {
 			return this.objectLayers[i];
+		}
+	}
+};
+
+TileMap.prototype.getTileLayer = function(layerName) {
+	for(var i = 0; i < this.objectLayers.length; ++i) {
+		if(this.mapLayers[i].name === layerName) {
+			return this.mapLayers[i];
 		}
 	}
 };

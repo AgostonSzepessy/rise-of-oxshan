@@ -247,6 +247,14 @@ Camera.prototype.setPosition = function(x, y) {
 	this.positionY = y;
 };
 
+Camera.prototype.setPositionX = function(x) {
+	this.positionX = x;
+};
+
+Camera.prototype.setPositionY = function(y) {
+	this.positionY = y;
+};
+
 Camera.prototype.checkBounds = function() {
 	// if it goes past right border of map, put it to the edge
 	if(this.positionX + canvasWidth > this.xBounds) {

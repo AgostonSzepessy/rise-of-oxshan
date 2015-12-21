@@ -126,10 +126,11 @@ PlayState.prototype.continueLoadingLevel = function() {
 						  this.tileMap.mapLayers[0].tileWidth,
 						  this.tileMap.mapLayers[0].height * 
 						  this.tileMap.mapLayers[0].tileHeight);
-	this.player.setPosition(this.tileMap.getLayer('player').objects[0].positionX,
-							this.tileMap.getLayer('player').objects[0].positionY);
-
-	console.log(this.tileMap.getLayer('player').objects[0].positionY);
+	this.player.setPosition(this.tileMap.getObjectLayer('player').objects[0].positionX,
+							this.tileMap.getObjectLayer('player').objects[0].positionY);
+	this.player.setTileMap(this.tileMap);
+	
+	console.log(this.tileMap.getObjectLayer('player').objects[0].positionY);
 	console.log(this.camera.positionY);
 };
 
@@ -140,8 +141,15 @@ PlayState.prototype.update = function(dt) {
         Game.gsm.changeState(new MenuState());
     }
 	
+	
 	if(Game.levelLoaded) {
-		this.player.update(dt);
+//		if(Key.isDown(Key.W)) {
+//			this.player.setJumping(true);
+//		}
+//		else {
+//			this.player.setJumping(false);
+//		}
+		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
 	}
 	
@@ -151,7 +159,10 @@ PlayState.prototype.draw = function() {
     'use strict';
     clear('#655541');
 	this.tileMap.draw(this.camera);
-	this.player.draw(this.camera);	
+	this.player.draw(this.camera);
+	ctx.beginPath();
+	ctx.fillText(Game.elapsed, 10, 20);
+	ctx.closePath();
 };
 
 
@@ -199,6 +210,11 @@ function setInitialState() {
 	Game.res = new ResourceManager();
 	Game.levelLoaded = false;
 	Game.time = 0;
+	Game.elapsed = 0;
+	Game.totalFps = 0;
+	Game.startTime = window.performance.now();
+	Game.elapsedTime = 0;
+	Game.currentFps = 1;
 	Game.numFrames = 0;
 	Game.then = window.performance.now();
 
@@ -215,6 +231,16 @@ function startGame(images) {
 		window.requestAnimationFrame(main);
 		var now = window.performance.now();
 		var dt = now - (time || now);
+		Game.elapsed = 1 / dt * 1000;
+		Game.totalFps += Game.elapsed;
+		Game.numFrames++;
+		Game.elapsedTime = now - Game.startTime;
+		
+		if(Game.elapsedTime > 1000) {
+			Game.currentFps = Game.totalFps / Game.numFrames;
+			Game.startTime = window.performance.now();
+		}
+		
 		time = now;
 
         Game.update(dt);
