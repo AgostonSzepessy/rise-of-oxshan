@@ -110,13 +110,13 @@ Entity.prototype.checkMapCollision = function(dt) {
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
 			this.tempY = (currentRow + 1) * tileLayer.tileHeight - this.height;
 			this.dy = 0;
-//			this.falling = true;
 			this.grounded = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
 		}
 	}
+	// going up
 	if(this.dy < 0) {
 		if(this.topLeftBlocked || this.topRightBlocked) {
 			this.tempY = (currentRow - 1) * tileLayer.tileHeight + tileLayer.tileHeight;
@@ -161,12 +161,24 @@ function Player() {
 	this.maxFastVelocity = 0.75;
 	
 	this.jumpSpeed = 3;
+	this.doubleJumpSpeed = 2;
 	this.amountJumped = 0;
 	this.maxJumpHeight = 3.0;
 	this.jumping = false;
+	this.doubleJumping = false;
 	this.mayJump = false;
 	this.mayJumpAgain = false;
 }
+
+Player.prototype.setJumping = function(jumping) {
+	if(this.mayJump) {
+		this.jumping = jumping;
+		this.mayJump = true;
+	}
+	if(this.mayJumpAgain) {
+		this.doubleJumping = true;
+	}
+};
 
 Player.prototype.update = function(dt, camera) {	
 	if(Key.isDown(Key.D)) {
@@ -196,32 +208,17 @@ Player.prototype.update = function(dt, camera) {
 		}
 	}
 	
-	
-//	if(Key.isDown(Key.W) && (this.amountJumped <=  this.maxJumpHeight)) {
-//		this.jumping = true;
-////		console.log('w is presed');
-//		if(!this.alreadyJumped) {
-//			this.dy = this.dy - this.jumpSpeed;
-//			this.amountJumped += this.jumpSpeed;
-//			if(this.maxJumpHeight >= this.amountJumped) {
-//				this.jumping = false;
-//				this.alreadyJumped = true;
-//				this.falling = true;
-//				this.amountJumped = 0;
-//			}
-//		}
-//	}
-
-	if(Key.isKeyPressed(Key.W)) {
-		if(this.mayJump) {
-			this.dy -= this.jumpSpeed;
-			this.mayJump = false;
-		}
+	if(this.jumping) {
+		this.dy -= this.jumpSpeed;
+		this.mayJump = false;
+		this.jumping = false;
+		this.mayJumpAgain = true;
 	}
 	
-	
-	if(Key.isDown(Key.W)) {
-//		console.log('this.alreadyJumped = ' + this.alreadyJumped);
+	if(this.doubleJumping) {
+		this.dy -= this.doubleJumpSpeed;
+		this.doubleJumping = false;
+		this.mayJumpAgain = false;
 	}
 	
 	if(this.falling && !this.jumping) {
@@ -234,10 +231,9 @@ Player.prototype.update = function(dt, camera) {
 	
 	this.checkMapCollision(dt);
 	
-	console.log('this.grounded = ' + this.grounded);
-	
 	if(this.grounded) {
 		this.mayJump = true;
+		this.mayJumpAgain = false;
 	}
 	
 	if(this.falling) {

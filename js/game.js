@@ -143,12 +143,9 @@ PlayState.prototype.update = function(dt) {
 	
 	
 	if(Game.levelLoaded) {
-//		if(Key.isDown(Key.W)) {
-//			this.player.setJumping(true);
-//		}
-//		else {
-//			this.player.setJumping(false);
-//		}
+		if(Key.isKeyPressed(Key.W)) {
+			this.player.setJumping(true);
+		}
 		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
 	}
