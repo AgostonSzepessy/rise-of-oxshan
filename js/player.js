@@ -1,7 +1,7 @@
 Player.prototype = new Entity();
 
 function Player() {
-	this.texture = Game.res.getImage('player');
+	this.texture = Game.res.getImage('player_2');
 	this.width = this.texture.width;
 	this.height = this.texture.height;
 	this.acceleration = 0.025;
