@@ -1,6 +1,3 @@
-/* jshint devel: true */
-/* jshint browser: true */
-
 // GameState - base class for each state of the game (menu, playing, etc)
 function GameState() {'use strict'; }
 
@@ -99,8 +96,8 @@ MenuState.prototype.handleInput = function() {
 		}
 	}
 	
-	if((Key.isKeyPressed(Key.SPACE) || Key.isKeyPressed(Key.ENTER)) 
-	   && this.selectedOption === this.PLAY) {
+	if((Key.isKeyPressed(Key.SPACE) || Key.isKeyPressed(Key.ENTER)) &&
+	   this.selectedOption === this.PLAY) {
         Game.gsm.changeState(new PlayState());
 	}
 };
@@ -135,7 +132,6 @@ PlayState.prototype.continueLoadingLevel = function() {
 };
 
 PlayState.prototype.update = function(dt) {
-    'use strict';
 	
     if (Key.isKeyPressed(Key.SPACE)) {
         Game.gsm.changeState(new MenuState());
@@ -143,16 +139,13 @@ PlayState.prototype.update = function(dt) {
 	
 	
 	if(Game.levelLoaded) {
-//		if(Key.isDown(Key.W)) {
-//			this.player.setJumping(true);
-//		}
-//		else {
-//			this.player.setJumping(false);
-//		}
+		if(Key.isKeyPressed(Key.W))
+			this.player.setJumping(true);
+
 		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
-	}
 	
+	}
 };
 
 PlayState.prototype.draw = function() {
@@ -170,7 +163,8 @@ window.onload = function() {
 	var sources = {
 		grey_dot: '/rise-of-oxshan/res/grey_dot.png',
 		menu_text: '/rise-of-oxshan/res/menu-text.png',
-		player: '/rise-of-oxshan/res/player.png'
+		player: '/rise-of-oxshan/res/player.png',
+		player_2: '/rise-of-oxshan/res/player.png'
 	};
 	
 	loadImages(sources, startGame);
@@ -214,7 +208,6 @@ function setInitialState() {
 	Game.totalFps = 0;
 	Game.startTime = window.performance.now();
 	Game.elapsedTime = 0;
-	Game.currentFps = 1;
 	Game.numFrames = 0;
 	Game.then = window.performance.now();
 
@@ -237,7 +230,6 @@ function startGame(images) {
 		Game.elapsedTime = now - Game.startTime;
 		
 		if(Game.elapsedTime > 1000) {
-			Game.currentFps = Game.totalFps / Game.numFrames;
 			Game.startTime = window.performance.now();
 		}
 		

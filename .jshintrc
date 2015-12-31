@@ -1,4 +1,6 @@
 {
+	"devel": true,
+	"browser": true,
 	"globals": { "Game": true,
                  "Key": true,
                  "ctx": true,
@@ -7,6 +9,12 @@
                  "canvasHeight": true,
                  "Camera": true,
                  "TileMap": true,
-                 "Player": true
+                 "Player": true,
+				 "Entity": true,
+				 "Tile": true,
+				 "Game": true,
+				 "Key": true,
+				 "ResourceManager": true,
+				 "GameStateManager": true
                }
 }

@@ -1,6 +1,3 @@
-/* jshint devel: true */
-/* jshint browser: true */
-
 var c = document.getElementById('c');
 var ctx = c.getContext('2d');
 var FPS = 60;

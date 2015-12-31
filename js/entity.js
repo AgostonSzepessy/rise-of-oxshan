@@ -1,6 +1,3 @@
-/* jshint devel: true */
-/* jshint browser: true */
-
 function AnimationFrame() {
 	this.positionX = 0;
 	this.positionY = 0;
@@ -79,7 +76,7 @@ Entity.prototype.getCorners = function(x, y) {
 	var bottom = y + this.height - 1;
 	
 	var topLeftTile = tileLayer.getTileType(left, top);
-	var topRightTile = tileLayer.getTileType(right , top);
+	var topRightTile = tileLayer.getTileType(right, top);
 	var bottomLeftTile = tileLayer.getTileType(left, bottom);
 	var bottomRightTile = tileLayer.getTileType(right, bottom);
 	
@@ -102,7 +99,6 @@ Entity.prototype.checkMapCollision = function(dt) {
 	var currentColumn = parseInt(this.positionX / tileLayer.tileWidth);
 	var currentRow = parseInt(this.positionY / tileLayer.tileHeight);
 	
-	
 	this.getCorners(this.positionX, this.yDest);
 	
 	// going down
@@ -110,13 +106,14 @@ Entity.prototype.checkMapCollision = function(dt) {
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
 			this.tempY = (currentRow + 1) * tileLayer.tileHeight - this.height;
 			this.dy = 0;
-//			this.falling = true;
+			this.falling = false;
 			this.grounded = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
 		}
 	}
+	// going up
 	if(this.dy < 0) {
 		if(this.topLeftBlocked || this.topRightBlocked) {
 			this.tempY = (currentRow - 1) * tileLayer.tileHeight + tileLayer.tileHeight;
@@ -127,9 +124,8 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.tempY += this.dy * dt;
 		}
 	}
-	
 	this.getCorners(this.xDest, this.positionY);
-	// going left
+	// going left; check if there are any blocks to the left of him
 	if(this.dx < 0) {
 		if(this.topLeftBlocked || this.bottomLeftBlocked) {
 			this.tempX = currentColumn * tileLayer.tileWidth;
@@ -139,6 +135,7 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.tempX += this.dx * dt;
 		}
 	}
+	// going right; check if there are any blocks to the right of him
 	if(this.dx > 0) {
 		if(this.topRightBlocked || this.bottomRightBlocked) {
 			this.tempX = (currentColumn + 1) * tileLayer.tileWidth - this.width;
@@ -148,122 +145,13 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.tempX += this.dx * dt;
 		}
 	}
-};
-
-Player.prototype = new Entity();
-
-function Player() {
-	this.texture = Game.res.getImage('player');
-	this.width = this.texture.width;
-	this.height = this.texture.height;
-	this.acceleration = 0.025;
-	this.maxVelocity = 0.25;
-	this.maxFastVelocity = 0.75;
 	
-	this.jumpSpeed = 3;
-	this.amountJumped = 0;
-	this.maxJumpHeight = 3.0;
-	this.jumping = false;
-	this.mayJump = false;
-	this.mayJumpAgain = false;
-}
-
-Player.prototype.update = function(dt, camera) {	
-	if(Key.isDown(Key.D)) {
-		this.dx += this.acceleration;
-		if(Key.isDown(Key.SHIFT)) {
-			if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
-		}
-		if(!Key.isDown(Key.SHIFT) && this.dx > this.maxVelocity) {
-			this.dx = this.maxVelocity;
+	// if player is not falling, then check if there are any blocks under him
+	if(!this.falling) {
+		this.getCorners(this.positionX, this.yDest + 1);
+		if(!this.bottomLeftBlocked && !this.bottomRightBlocked) {
+			this.falling = true;
 		}
 	}
 	
-	else if(Key.isDown(Key.A)) {
-		this.dx -= this.acceleration;
-		if(Key.isDown(Key.SHIFT)) {
-			if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
-		}
-		else if(!Key.isDown(Key.SHIFT) && this.dx < -this.maxVelocity) {
-			this.dx = -this.maxVelocity;
-		}
-	}
-	
-	else {
-		this.dx *= 0.1;
-		if(this.dx < 0.0001 && this.dx > -0.0001) {
-			this.dx = 0;
-		}
-	}
-	
-	
-//	if(Key.isDown(Key.W) && (this.amountJumped <=  this.maxJumpHeight)) {
-//		this.jumping = true;
-////		console.log('w is presed');
-//		if(!this.alreadyJumped) {
-//			this.dy = this.dy - this.jumpSpeed;
-//			this.amountJumped += this.jumpSpeed;
-//			if(this.maxJumpHeight >= this.amountJumped) {
-//				this.jumping = false;
-//				this.alreadyJumped = true;
-//				this.falling = true;
-//				this.amountJumped = 0;
-//			}
-//		}
-//	}
-
-	if(Key.isKeyPressed(Key.W)) {
-		if(this.mayJump) {
-			this.dy -= this.jumpSpeed;
-			this.mayJump = false;
-		}
-	}
-	
-	
-	if(Key.isDown(Key.W)) {
-//		console.log('this.alreadyJumped = ' + this.alreadyJumped);
-	}
-	
-	if(this.falling && !this.jumping) {
-		if(this.dy < this.terminalVelocity) {
-			this.dy += this.gravity;
-			if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
-		}
-	}
-	
-	
-	this.checkMapCollision(dt);
-	
-	console.log('this.grounded = ' + this.grounded);
-	
-	if(this.grounded) {
-		this.mayJump = true;
-	}
-	
-	if(this.falling) {
-		this.grounded = false;
-	}
-	
-	this.setPosition(this.tempX, this.tempY);
-	
-	if(this.positionX < 0) {
-		this.positionX = 0;
-	}
-	
-	if(this.positionX > this.xBounds) {
-		this.positionX = this.xBounds - this.width;
-	}
-	
-	camera.setPositionX(this.positionX - camera.width / 2);
-};
-
-Player.prototype.draw = function(camera) {
-	camera.draw(this.texture, this.positionX, this.positionY, this.width,
-			   	this.height, 0, 0);
-	ctx.beginPath();
-	ctx.fillStyle = "white";
-	ctx.fillText('Player dx is ' + this.dx, 0, 10);
-	ctx.fillText('this.falling = ' + this.falling, 0, 30);
-	ctx.fillText('Game.currentFps = ' + Game.currentFps, 0, 40);
-	ctx.closePath();
 };

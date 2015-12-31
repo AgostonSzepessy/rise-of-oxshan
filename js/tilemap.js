@@ -1,6 +1,3 @@
-/* jshint devel: true */
-/* jshint browser: true */
-
 function Tile(tileWidth, tileHeight, tileType, tileImgXPosition, tileImgYPosition) {
 	this.width = tileWidth;
 	this.height = tileHeight;
