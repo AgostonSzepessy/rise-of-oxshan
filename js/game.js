@@ -139,9 +139,9 @@ PlayState.prototype.update = function(dt) {
 	
 	
 	if(Game.levelLoaded) {
-		if(Key.isKeyPressed(Key.W))
+		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);
-
+		}
 		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
 	

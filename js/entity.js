@@ -153,5 +153,4 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.falling = true;
 		}
 	}
-	
 };
