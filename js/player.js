@@ -10,7 +10,6 @@ function Player() {
 	
 	this.jumpSpeed = 3;
 	this.doubleJumpSpeed = 2;
-	this.amountJumped = 0;
 	this.jumping = false;
 	this.doubleJumping = false;
 	this.mayJump = false;
@@ -19,8 +18,7 @@ function Player() {
 
 Player.prototype.setJumping = function(jumping) {
 	if(this.mayJump) {
-		this.jumping = jumping;
-		this.mayJump = true;
+		this.jumping = true;
 	}
 	if(this.mayJumpAgain) {
 		this.doubleJumping = true;
@@ -57,18 +55,20 @@ Player.prototype.update = function(dt, camera) {
 	
 	if(this.jumping) {
 		this.dy -= this.jumpSpeed;
-		this.mayJump = false;
-		this.jumping = false;
-		this.mayJumpAgain = true;
 		this.falling = true;
+		this.jumping = false;
+		this.mayJump = false;
+		this.grounded = false;
+		this.mayJumpAgain = true;
 	}
 	
 	if(this.doubleJumping) {
-		console.log('double jumping');
 		this.dy -= this.doubleJumpSpeed;
 		this.doubleJumping = false;
 		this.mayJumpAgain = false;
 		this.falling = true;
+		this.grounded = false;
+		console.log('double jumping');
 	}
 	
 	if(this.falling && !this.jumping) {
@@ -83,6 +83,7 @@ Player.prototype.update = function(dt, camera) {
 	if(this.grounded) {
 		this.mayJump = true;
 		this.mayJumpAgain = false;
+		this.jumping = false;
 	}
 	
 	if(this.falling) {
