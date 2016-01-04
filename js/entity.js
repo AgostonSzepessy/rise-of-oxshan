@@ -75,11 +75,13 @@ Entity.prototype.getCorners = function(x, y) {
 	var top = y;
 	var bottom = y + this.height - 1;
 	
+	// get the tiles surrounding the player
 	var topLeftTile = tileLayer.getTileType(left, top);
 	var topRightTile = tileLayer.getTileType(right, top);
 	var bottomLeftTile = tileLayer.getTileType(left, bottom);
 	var bottomRightTile = tileLayer.getTileType(right, bottom);
 	
+	// check if each tile is blocked or not
 	this.topLeftBlocked = Tile.BLOCKED == topLeftTile;
 	this.topRightBlocked = Tile.BLOCKED == topRightTile;
 	this.bottomLeftBlocked = Tile.BLOCKED == bottomLeftTile;
@@ -104,10 +106,13 @@ Entity.prototype.checkMapCollision = function(dt) {
 	// going down
 	if(this.dy > 0) {
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
-			this.tempY = (currentRow + 1) * tileLayer.tileHeight - this.height;
+			currentRow = parseInt((this.yDest + this.height) / tileLayer.tileHeight);
+			//			this.tempY = (currentRow + 1) * tileLayer.tileHeight - this.height;
+			this.tempY = currentRow * tileLayer.tileHeight - this.height;
+			console.log('this.height = ' + this.height);
 			this.dy = 0;
 			this.falling = false;
-			this.grounded = true;
+//			this.grounded = true;
 		}
 		else {
 			this.tempY += this.dy * dt;

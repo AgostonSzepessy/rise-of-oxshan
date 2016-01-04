@@ -68,17 +68,7 @@ Player.prototype.update = function(dt, camera) {
 		this.mayJumpAgain = false;
 		this.falling = true;
 		this.grounded = false;
-		console.log('double jumping');
 	}
-	
-	if(this.falling && !this.jumping) {
-		if(this.dy < this.terminalVelocity) {
-			this.dy += this.gravity;
-			if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
-		}
-	}
-
-	this.checkMapCollision(dt);
 	
 	if(this.grounded) {
 		this.mayJump = true;
@@ -86,9 +76,16 @@ Player.prototype.update = function(dt, camera) {
 		this.jumping = false;
 	}
 	
-	if(this.falling) {
-		this.grounded = false;
+	if(!this.falling) {
+		this.grounded = true;
 	}
+	
+	if(this.falling && !this.jumping) {
+			this.dy += this.gravity;
+			if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
+	}
+
+	this.checkMapCollision(dt);
 	
 	this.setPosition(this.tempX, this.tempY);
 	
