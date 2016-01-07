@@ -271,3 +271,33 @@ Camera.prototype.checkBounds = function() {
 		this.positionY = 0;
 	}
 };
+
+function AnimationFrame() {
+	this.positionX = 0;
+	this.positionY = 0;
+	this.width = 0;
+	this.height = 0;
+}
+
+function Animation(frames) {
+	this.frames = frames;
+	this.delay = 0;
+	this.time = 0;
+	this.currentFrame = 0;
+	this.timesPlayed = 0;
+}
+
+Animation.prototype.update = function(dt) {
+	if(this.delay < 0) return;
+	
+	this.time += dt;
+	
+	if(this.time > this.delay) {
+		this.time = 0;
+		this.frame++;
+		this.timesPlayed++;
+	}
+	if(this.frames >= this.farmes.length) {
+		this.frames = 0;
+	}
+};
