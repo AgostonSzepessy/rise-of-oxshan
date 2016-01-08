@@ -141,6 +141,17 @@ PlayState.prototype.update = function(dt) {
 		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);
 		}
+		
+		if(Key.isDown(Key.D)) this.player.movingRight = true;
+		else this.player.movingRight = false;
+		
+		if(Key.isDown(Key.A)) this.player.movingLeft = true;
+		else this.player.movingLeft = false;
+		
+		if(Key.isDown(Key.SHIFT)) this.player.shiftPressed = true;
+		else this.player.shiftPressed = false;
+		
+		
 		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
 	

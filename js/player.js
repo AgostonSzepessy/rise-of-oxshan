@@ -23,6 +23,10 @@ function Player() {
 	this.mayJump = false;
 	this.mayJumpAgain = false;
 	
+	this.movingRight = false;
+	this.movingLeft = false;
+	this.shiftPressed = false;
+	
 	var playerStanding = new Array(1);
 	playerStanding[0] = new AnimationFrame();
 	playerStanding[0].positionX = 4;
@@ -169,23 +173,23 @@ Player.prototype.setJumping = function(jumping) {
 	}
 };
 
-Player.prototype.update = function(dt, camera) {	
-	if(Key.isDown(Key.D)) {
+Player.prototype.update = function(dt, camera) {		
+	if(this.movingRight) {
 		this.dx += this.acceleration;
-		if(Key.isDown(Key.SHIFT)) {
+		if(this.shiftPressed) {
 			if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
 		}
-		if(!Key.isDown(Key.SHIFT) && this.dx > this.maxVelocity) {
+		if(!this.shiftPressed && this.dx > this.maxVelocity) {
 			this.dx = this.maxVelocity;
 		}
 	}
 	
-	else if(Key.isDown(Key.A)) {
+	else if(this.movingLeft) {
 		this.dx -= this.acceleration;
-		if(Key.isDown(Key.SHIFT)) {
+		if(this.shiftPressed) {
 			if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
 		}
-		else if(!Key.isDown(Key.SHIFT) && this.dx < -this.maxVelocity) {
+		else if(!this.shiftPressed && this.dx < -this.maxVelocity) {
 			this.dx = -this.maxVelocity;
 		}
 	}
@@ -248,10 +252,7 @@ Player.prototype.update = function(dt, camera) {
 	camera.setPositionX(this.positionX - camera.width / 2);
 };
 
-Player.prototype.draw = function(camera) {
-//	camera.draw(this.texture, this.positionX, this.positionY, this.width,
-//			   	this.height, 0, 0);
-	
+Player.prototype.draw = function(camera) {	
 	camera.draw(this.texture, this.positionX, this.positionY, this.width,
 			   	this.height, 
 				this.animations[this.currentAnimation].frames[this.currentFrame].positionX,
