@@ -149,6 +149,54 @@ function Player() {
 	playerDying[4].width = 77;
 	playerDying[4].height = 21;
 	
+	// left facing frames
+	var playerStandingLeft = new Array(1);
+	playerStandingLeft[0] = new AnimationFrame();
+	playerStandingLeft[0].positionX = 750;
+	playerStandingLeft[0].positionY = 11;
+	playerStandingLeft[0].width = 46;
+	playerStandingLeft[0].height = 57;
+	
+	var playerWalkingLeft = new Array(7);
+	for(i = 0; i < playerWalking.length; ++i) {
+		playerWalkingLeft[i] = new AnimationFrame();
+	}
+	
+	playerWalkingLeft[0].positionX = 57;
+	playerWalkingLeft[0].positionY = 11;
+	playerWalkingLeft[0].width = 38;
+	playerWalkingLeft[0].height = 56;
+	
+	playerWalkingLeft[1].positionX = 107;
+	playerWalkingLeft[1].positionY = 10;
+	playerWalkingLeft[1].width = 36;
+	playerWalkingLeft[1].height = 57;
+	
+	playerWalkingLeft[2].positionX = 159;
+	playerWalkingLeft[2].positionY = 9;
+	playerWalkingLeft[2].width = 34;
+	playerWalkingLeft[2].height = 58;
+	
+	playerWalkingLeft[3].positionX = 208;
+	playerWalkingLeft[3].positionY = 10;
+	playerWalkingLeft[3].width = 34;
+	playerWalkingLeft[3].height = 58;
+	
+	playerWalkingLeft[4].positionX = 252;
+	playerWalkingLeft[4].positionY = 12;
+	playerWalkingLeft[4].width = 43;
+	playerWalkingLeft[4].height = 56;
+	
+	playerWalkingLeft[5].positionX = 302;
+	playerWalkingLeft[5].positionY = 11;
+	playerWalkingLeft[5].width = 36;
+	playerWalkingLeft[5].height = 57;
+	
+	playerWalkingLeft[6].positionX = 350;
+	playerWalkingLeft[6].positionY = 10;
+	playerWalkingLeft[6].width = 36;
+	playerWalkingLeft[6].height = 58;
+	
 	this.animations= new Array(5);
 	
 	this.animations[this.PLAYER_STANDING] = new Animation(playerStanding);
