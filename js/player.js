@@ -13,8 +13,6 @@ function Player() {
 	this.PLAYER_JUMPING_LEFT = 7;
 	this.PLAYER_ATTACKING_LEFT = 8;
 	this.PLAYER_DYING_LEFT = 9;
-	this.currentAnimation = 0;
-	this.currentFrame = 0;
 	
 	this.texture = Game.res.getImage('player');
 	this.acceleration = 0.025;
@@ -277,20 +275,26 @@ function Player() {
 	playerDyingLeft[4].width = 77;
 	playerDyingLeft[4].height = 21;
 	
-	this.animations= new Array(10);
+	this.animations = new Array(10);
 	
 	this.animations[this.PLAYER_STANDING_RIGHT] = new Animation(playerStanding);
 	this.animations[this.PLAYER_STANDING_RIGHT].delay = -1;
 	
 	this.animations[this.PLAYER_WALKING_RIGHT] = new Animation(playerWalking);
+	this.animations[this.PLAYER_WALKING_RIGHT].delay = 110;
+	
 	this.animations[this.PLAYER_JUMPING_RIGHT] = new Animation(playerJumping);
+	
 	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
+	
 	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
 	
 	this.animations[this.PLAYER_STANDING_LEFT] = new Animation(playerStandingLeft);
 	this.animations[this.PLAYER_STANDING_LEFT].delay = -1;
 	
 	this.animations[this.PLAYER_WALKING_LEFT] = new Animation(playerWalkingLeft);
+	this.animations[this.PLAYER_WALKING_LEFT].delay = 110;
+	
 	this.animations[this.PLAYER_JUMPING_LEFT] = new Animation(playerWalkingLeft);
 	this.animations[this.PLAYER_ATTACKING_LEFT] = new Animation(playerAttackingLeft);
 	this.animations[this.PLAYER_DYING_LEFT] = new Animation(playerDyingLeft);
@@ -311,6 +315,8 @@ Player.prototype.setJumping = function(jumping) {
 
 Player.prototype.update = function(dt, camera) {		
 	if(this.movingRight) {
+		if(this.dx > 0) this.facingRight = true;
+		
 		this.dx += this.acceleration;
 		if(this.shiftPressed) {
 			if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
@@ -321,6 +327,8 @@ Player.prototype.update = function(dt, camera) {
 	}
 	
 	else if(this.movingLeft) {
+		if(this.dx < 0) this.facingRight = false;
+		
 		this.dx -= this.acceleration;
 		if(this.shiftPressed) {
 			if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
@@ -402,7 +410,28 @@ Player.prototype.draw = function(camera) {
 };
 
 Player.prototype.updateAnimation = function(dt) {
-	// TODO: use which way player is moving to update animation
+	if(this.facingRight) {
+		if(this.movingRight && this.currentAnimation != this.PLAYER_WALKING_RIGHT) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_WALKING_RIGHT;
+		}
+		if(!this.movingRight) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_STANDING_RIGHT;
+		}
+	}
+	
+	if(!this.facingRight) {
+		if(this.movingLeft && this.currentAnimation != this.PLAYER_WALKING_LEFT) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_WALKING_LEFT;
+		}
+		if(!this.movingLeft) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_STANDING_LEFT;
+		}
+	}
+	
 	this.animations[this.currentAnimation].update(dt);
 	
 	this.currentFrame = this.animations[this.currentAnimation].currentFrame;

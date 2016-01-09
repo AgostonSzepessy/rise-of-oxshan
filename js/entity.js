@@ -23,7 +23,6 @@ function Entity() {
 	this.acceleration = 0.0;
 	this.maxVelocity = 0.0;
 	this.tileMap = null;
-	this.animationPositions = [];
 	this.height = 0;
 	this.width = 0;
 	this.gravity = 0.3;
@@ -33,6 +32,11 @@ function Entity() {
 	this.yBounds = 0;
 	this.falling = true;
 	this.grounded = false;
+	
+	this.facingRight = true;
+	this.currentAnimation = 0;
+	this.currentFrame = 0;
+	this.animations = [];
 }
 
 Entity.prototype.setPosition = function(x, y) {
@@ -63,6 +67,12 @@ Entity.prototype.setBounds = function(xBound, yBound) {
 
 Entity.prototype.setTileMap = function(map) {
 	this.tileMap = map;
+};
+
+Entity.prototype.clearAnimation = function() {
+	this.animations[this.currentAnimation].currentFrame = 0;
+	this.animations[this.currentAnimation].time = 0;
+	this.animations[this.currentAnimation].timesPlayed = 0;
 };
 
 // checks if the player is going to collide with any corners
@@ -107,12 +117,9 @@ Entity.prototype.checkMapCollision = function(dt) {
 	if(this.dy > 0) {
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
 			currentRow = parseInt((this.yDest + this.height) / tileLayer.tileHeight);
-			//			this.tempY = (currentRow + 1) * tileLayer.tileHeight - this.height;
-			this.tempY = currentRow * tileLayer.tileHeight - this.height;
-			console.log('this.height = ' + this.height);
+			this.tempY = currentRow * tileLayer.tileHeight - this.height - 2;
 			this.dy = 0;
 			this.falling = false;
-//			this.grounded = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
