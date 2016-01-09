@@ -3,11 +3,16 @@ Player.prototype = new Entity();
 function Player() {
 	Entity.call(this);
 	
-	this.PLAYER_STANDING = 0;
-	this.PLAYER_WALKING = 1;
-	this.PLAYER_JUMPING = 2;
-	this.PLAYER_ATTACKING = 3;
-	this.PLAYER_DYING = 4;
+	this.PLAYER_STANDING_RIGHT = 0;
+	this.PLAYER_WALKING_RIGHT = 1;
+	this.PLAYER_JUMPING_RIGHT = 2;
+	this.PLAYER_ATTACKING_RIGHT = 3;
+	this.PLAYER_DYING_RIGHT = 4;
+	this.PLAYER_STANDING_LEFT = 5;
+	this.PLAYER_WALKING_LEFT = 6;
+	this.PLAYER_JUMPING_LEFT = 7;
+	this.PLAYER_ATTACKING_LEFT = 8;
+	this.PLAYER_DYING_LEFT = 9;
 	this.currentAnimation = 0;
 	this.currentFrame = 0;
 	
@@ -162,50 +167,133 @@ function Player() {
 		playerWalkingLeft[i] = new AnimationFrame();
 	}
 	
-	playerWalkingLeft[0].positionX = 57;
+	playerWalkingLeft[0].positionX = 705;
 	playerWalkingLeft[0].positionY = 11;
 	playerWalkingLeft[0].width = 38;
 	playerWalkingLeft[0].height = 56;
 	
-	playerWalkingLeft[1].positionX = 107;
+	playerWalkingLeft[1].positionX = 657;
 	playerWalkingLeft[1].positionY = 10;
 	playerWalkingLeft[1].width = 36;
 	playerWalkingLeft[1].height = 57;
 	
-	playerWalkingLeft[2].positionX = 159;
+	playerWalkingLeft[2].positionX = 607;
 	playerWalkingLeft[2].positionY = 9;
 	playerWalkingLeft[2].width = 34;
 	playerWalkingLeft[2].height = 58;
 	
-	playerWalkingLeft[3].positionX = 208;
+	playerWalkingLeft[3].positionX = 558;
 	playerWalkingLeft[3].positionY = 10;
 	playerWalkingLeft[3].width = 34;
 	playerWalkingLeft[3].height = 58;
 	
-	playerWalkingLeft[4].positionX = 252;
+	playerWalkingLeft[4].positionX = 505;
 	playerWalkingLeft[4].positionY = 12;
 	playerWalkingLeft[4].width = 43;
 	playerWalkingLeft[4].height = 56;
 	
-	playerWalkingLeft[5].positionX = 302;
+	playerWalkingLeft[5].positionX = 462;
 	playerWalkingLeft[5].positionY = 11;
 	playerWalkingLeft[5].width = 36;
 	playerWalkingLeft[5].height = 57;
 	
-	playerWalkingLeft[6].positionX = 350;
+	playerWalkingLeft[6].positionX = 414;
 	playerWalkingLeft[6].positionY = 10;
 	playerWalkingLeft[6].width = 36;
 	playerWalkingLeft[6].height = 58;
 	
-	this.animations= new Array(5);
+	var playerJumpingLeft = new Array(4);
+	for(i = 0; i < playerJumping.length; ++i) {
+		playerJumpingLeft[i] = new AnimationFrame();
+	}
 	
-	this.animations[this.PLAYER_STANDING] = new Animation(playerStanding);
-	this.animations[this.PLAYER_STANDING].delay = -1;
+	playerJumpingLeft[0].positionX = 735;
+	playerJumpingLeft[0].positionY = 82;
+	playerJumpingLeft[0].width = 56;
+	playerJumpingLeft[0].height = 48;
 	
-	this.animations[this.PLAYER_WALKING] = new Animation(playerWalking);
-	this.animations[this.PLAYER_JUMPING] = new Animation(playerJumping);
-	this.animations[this.PLAYER_ATTACKING] = new Animation(playerAttacking);
-	this.animations[this.PLAYER_DYING] = new Animation(playerDying);
+	playerJumpingLeft[1].positionX = 657;
+	playerJumpingLeft[1].positionY = 79;
+	playerJumpingLeft[1].width = 52;
+	playerJumpingLeft[1].height = 65;
+	
+	playerJumpingLeft[2].positionX = 568;
+	playerJumpingLeft[2].positionY = 82;
+	playerJumpingLeft[2].width = 53;
+	playerJumpingLeft[2].height = 57;
+	
+	playerJumpingLeft[3].positionX = 522;
+	playerJumpingLeft[3].positionY = 82;
+	playerJumpingLeft[3].width = 60;
+	playerJumpingLeft[3].height = 57;
+	
+	var playerAttackingLeft = new Array(3);
+	for(i = 0; i  < playerAttacking.length; ++i) {
+		playerAttackingLeft[i] = new AnimationFrame();
+	}
+	
+	playerAttackingLeft[0].positionX = 730;
+	playerAttackingLeft[0].positionY = 255;
+	playerAttackingLeft[0].width = 64;
+	playerAttackingLeft[0].height = 71;
+	
+	playerAttackingLeft[1].positionX = 635;
+	playerAttackingLeft[1].positionY = 275;
+	playerAttackingLeft[1].width = 80;
+	playerAttackingLeft[1].height = 51;
+	
+	playerAttackingLeft[2].positionX = 555;
+	playerAttackingLeft[2].positionY = 275;
+	playerAttackingLeft[2].width = 63;
+	playerAttackingLeft[2].height = 51;
+	
+	var playerDyingLeft = new Array(5);
+	for(i = 0; i < playerDying.length; ++i) {
+		playerDyingLeft[i] = new AnimationFrame();
+	}
+	
+	playerDyingLeft[0].positionX = 734;
+	playerDyingLeft[0].positionY = 143;
+	playerDyingLeft[0].width = 55;
+	playerDyingLeft[0].height = 50;
+	
+	playerDyingLeft[1].positionX = 657;
+	playerDyingLeft[1].positionY = 155;
+	playerDyingLeft[1].width = 53;
+	playerDyingLeft[1].height = 42;
+	
+	playerDyingLeft[2].positionX = 571;
+	playerDyingLeft[2].positionY = 152;
+	playerDyingLeft[2].width = 68;
+	playerDyingLeft[2].height = 44;
+	
+	playerDyingLeft[3].positionX = 487;
+	playerDyingLeft[3].positionY = 155;
+	playerDyingLeft[3].width = 67;
+	playerDyingLeft[3].height = 42;
+	
+	playerDyingLeft[4].positionX = 402;
+	playerDyingLeft[4].positionY = 178;
+	playerDyingLeft[4].width = 77;
+	playerDyingLeft[4].height = 21;
+	
+	this.animations= new Array(10);
+	
+	this.animations[this.PLAYER_STANDING_RIGHT] = new Animation(playerStanding);
+	this.animations[this.PLAYER_STANDING_RIGHT].delay = -1;
+	
+	this.animations[this.PLAYER_WALKING_RIGHT] = new Animation(playerWalking);
+	this.animations[this.PLAYER_JUMPING_RIGHT] = new Animation(playerJumping);
+	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
+	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
+	
+	this.animations[this.PLAYER_STANDING_LEFT] = new Animation(playerStandingLeft);
+	this.animations[this.PLAYER_STANDING_LEFT].delay = -1;
+	
+	this.animations[this.PLAYER_WALKING_LEFT] = new Animation(playerWalkingLeft);
+	this.animations[this.PLAYER_JUMPING_LEFT] = new Animation(playerWalkingLeft);
+	this.animations[this.PLAYER_ATTACKING_LEFT] = new Animation(playerAttackingLeft);
+	this.animations[this.PLAYER_DYING_LEFT] = new Animation(playerDyingLeft);
 	
 	this.width = this.animations[this.currentAnimation].frames[0].width;
 	this.height = this.animations[this.currentAnimation].frames[0].height;
