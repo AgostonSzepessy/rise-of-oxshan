@@ -117,7 +117,7 @@ Entity.prototype.checkMapCollision = function(dt) {
 	if(this.dy > 0) {
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
 			currentRow = parseInt((this.yDest + this.height) / tileLayer.tileHeight);
-			this.tempY = currentRow * tileLayer.tileHeight - this.height - 2;
+			this.tempY = currentRow * tileLayer.tileHeight - this.height;
 			this.dy = 0;
 			this.falling = false;
 		}

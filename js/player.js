@@ -434,16 +434,12 @@ Player.prototype.updateAnimation = function(dt) {
 			this.playJumpAnimation = false;
 		}
 		
-//		else if(this.currentAnimation == this.PLAYER_JUMPING_RIGHT && this.falling) {
-//				if(this.animations[this.currentAnimation].timesPlayed >= 1 && 
-//				   this.currentAnimation != this.PLAYER_FALLING_RIGHT) {
-//				this.clearAnimation();
-//				this.currentAnimation = this.PLAYER_FALLING_RIGHT;
-//			}
-//		}
-		
-		
-		
+		if(this.currentAnimation == this.PLAYER_JUMPING_RIGHT && 
+		   this.animations[this.currentAnimation].timesPlayed >= 1) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_FALLING_RIGHT;
+		}
+				
 		else if(this.movingRight && this.currentAnimation != this.PLAYER_WALKING_RIGHT) {
 			this.clearAnimation();
 			this.currentAnimation = this.PLAYER_WALKING_RIGHT;
@@ -468,7 +464,20 @@ Player.prototype.updateAnimation = function(dt) {
 	this.animations[this.currentAnimation].update(dt);
 	
 	this.currentFrame = this.animations[this.currentAnimation].currentFrame;
-	this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
 	
+	var prevHeight = this.height;
+	
+	this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
 	this.height = this.animations[this.currentAnimation].frames[this.currentFrame].height;
+	
+	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
+	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
+	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
+		if(this.height > prevHeight && !this.falling)
+			this.tempY -= this.height - prevHeight;
+		else if(this.height < prevHeight)
+			this.tempY += prevHeight - this.height;
+	}
+	
+	
 };
