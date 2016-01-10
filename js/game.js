@@ -174,7 +174,6 @@ window.onload = function() {
 		grey_dot: '/rise-of-oxshan/res/grey_dot.png',
 		menu_text: '/rise-of-oxshan/res/menu-text.png',
 		player: '/rise-of-oxshan/res/player-final.png',
-		player_2: '/rise-of-oxshan/res/player-2.png'
 	};
 	
 	loadImages(sources, startGame);

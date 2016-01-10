@@ -13,6 +13,8 @@ function Player() {
 	this.PLAYER_JUMPING_LEFT = 7;
 	this.PLAYER_ATTACKING_LEFT = 8;
 	this.PLAYER_DYING_LEFT = 9;
+	this.PLAYER_FALLING_RIGHT = 10;
+	this.PLAYER_FALLING_LEFT = 11;
 	
 	this.texture = Game.res.getImage('player');
 	this.acceleration = 0.025;
@@ -25,11 +27,13 @@ function Player() {
 	this.doubleJumping = false;
 	this.mayJump = false;
 	this.mayJumpAgain = false;
+	this.playJumpAnimation = false;
 	
 	this.movingRight = false;
 	this.movingLeft = false;
 	this.shiftPressed = false;
 	
+	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
 	playerStanding[0] = new AnimationFrame();
 	playerStanding[0].positionX = 4;
@@ -101,6 +105,9 @@ function Player() {
 	playerJumping[3].positionY = 82;
 	playerJumping[3].width = 60;
 	playerJumping[3].height = 57;
+	
+	var playerFalling = new Array(1);
+	playerFalling[0] = playerJumping[3];
 	
 	var playerAttacking = new Array(3);
 	for(i = 0; i  < playerAttacking.length; ++i) {
@@ -225,6 +232,9 @@ function Player() {
 	playerJumpingLeft[3].width = 60;
 	playerJumpingLeft[3].height = 57;
 	
+	var playerFallingLeft = new Array(1);
+	playerFallingLeft[0] = playerJumpingLeft[3];
+	
 	var playerAttackingLeft = new Array(3);
 	for(i = 0; i  < playerAttacking.length; ++i) {
 		playerAttackingLeft[i] = new AnimationFrame();
@@ -275,7 +285,8 @@ function Player() {
 	playerDyingLeft[4].width = 77;
 	playerDyingLeft[4].height = 21;
 	
-	this.animations = new Array(10);
+	// setup animations and delay between frames for each animation
+	this.animations = new Array(12);
 	
 	this.animations[this.PLAYER_STANDING_RIGHT] = new Animation(playerStanding);
 	this.animations[this.PLAYER_STANDING_RIGHT].delay = -1;
@@ -284,6 +295,10 @@ function Player() {
 	this.animations[this.PLAYER_WALKING_RIGHT].delay = 110;
 	
 	this.animations[this.PLAYER_JUMPING_RIGHT] = new Animation(playerJumping);
+	this.animations[this.PLAYER_JUMPING_RIGHT].delay = 100;
+	
+	this.animations[this.PLAYER_FALLING_RIGHT] = new Animation(playerFalling);
+	this.animations[this.PLAYER_FALLING_RIGHT].delay = -1;
 	
 	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
 	
@@ -298,6 +313,7 @@ function Player() {
 	this.animations[this.PLAYER_JUMPING_LEFT] = new Animation(playerWalkingLeft);
 	this.animations[this.PLAYER_ATTACKING_LEFT] = new Animation(playerAttackingLeft);
 	this.animations[this.PLAYER_DYING_LEFT] = new Animation(playerDyingLeft);
+	this.animations[this.PLAYER_FALLING_LEFT] = new Animation(playerFallingLeft);
 	
 	this.width = this.animations[this.currentAnimation].frames[0].width;
 	this.height = this.animations[this.currentAnimation].frames[0].height;
@@ -307,6 +323,7 @@ function Player() {
 Player.prototype.setJumping = function(jumping) {
 	if(this.mayJump) {
 		this.jumping = true;
+		this.playJumpAnimation = true;
 	}
 	if(this.mayJumpAgain) {
 		this.doubleJumping = true;
@@ -411,11 +428,27 @@ Player.prototype.draw = function(camera) {
 
 Player.prototype.updateAnimation = function(dt) {
 	if(this.facingRight) {
-		if(this.movingRight && this.currentAnimation != this.PLAYER_WALKING_RIGHT) {
+		if(this.playJumpAnimation && this.currentAnimation != this.PLAYER_JUMPING_RIGHT) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_JUMPING_RIGHT;
+			this.playJumpAnimation = false;
+		}
+		
+//		else if(this.currentAnimation == this.PLAYER_JUMPING_RIGHT && this.falling) {
+//				if(this.animations[this.currentAnimation].timesPlayed >= 1 && 
+//				   this.currentAnimation != this.PLAYER_FALLING_RIGHT) {
+//				this.clearAnimation();
+//				this.currentAnimation = this.PLAYER_FALLING_RIGHT;
+//			}
+//		}
+		
+		
+		
+		else if(this.movingRight && this.currentAnimation != this.PLAYER_WALKING_RIGHT) {
 			this.clearAnimation();
 			this.currentAnimation = this.PLAYER_WALKING_RIGHT;
 		}
-		if(!this.movingRight) {
+		else if(!this.movingRight) {
 			this.clearAnimation();
 			this.currentAnimation = this.PLAYER_STANDING_RIGHT;
 		}
