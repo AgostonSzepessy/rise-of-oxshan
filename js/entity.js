@@ -25,7 +25,7 @@ function Entity() {
 	this.tileMap = null;
 	this.height = 0;
 	this.width = 0;
-	this.gravity = 0.3;
+	this.gravity = 0.2;
 	this.terminalVelocity = 1;
 	this.texture = null;
 	this.xBounds = 0;
