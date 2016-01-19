@@ -1,10 +1,3 @@
-function AnimationFrame() {
-	this.positionX = 0;
-	this.positionY = 0;
-	this.width = 0;
-	this.height = 0;
-}
-
 function Entity() {
 	this.positionX = 0.0;
 	this.positionY = 0.0;
@@ -15,6 +8,7 @@ function Entity() {
 	this.dx = 0.0;
 	this.dy = 0.0;
 	
+	// the sides of the tiles surrounding player that are blocked
 	this.topLeftBlocked = false;
 	this.topRightBlocked = false;
 	this.bottomLeftBlocked = false;
@@ -28,8 +22,11 @@ function Entity() {
 	this.gravity = 0.2;
 	this.terminalVelocity = 1;
 	this.texture = null;
+	
+	// boundaries of the level
 	this.xBounds = 0;
 	this.yBounds = 0;
+	
 	this.falling = true;
 	this.grounded = false;
 	
@@ -115,11 +112,13 @@ Entity.prototype.checkMapCollision = function(dt) {
 	
 	// going down
 	if(this.dy > 0) {
+		// collision
 		if(this.bottomLeftBlocked || this.bottomRightBlocked) {
 			currentRow = parseInt((this.yDest + this.height) / tileLayer.tileHeight);
 			this.tempY = currentRow * tileLayer.tileHeight - this.height;
 			this.dy = 0;
 			this.falling = false;
+			this.grounded = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
@@ -127,6 +126,7 @@ Entity.prototype.checkMapCollision = function(dt) {
 	}
 	// going up
 	if(this.dy < 0) {
+		// collision
 		if(this.topLeftBlocked || this.topRightBlocked) {
 			this.tempY = (currentRow - 1) * tileLayer.tileHeight + tileLayer.tileHeight;
 			this.dy = 0;
@@ -166,3 +166,18 @@ Entity.prototype.checkMapCollision = function(dt) {
 		}
 	}
 };
+
+Entity.prototype.isInsideCamera = function(camera) {
+	// TODO: check if inside camera
+	return true;
+};
+
+Enemy.prototype = new Entity();
+
+function Enemy() {
+	Entity.call(this);
+	this.health = 1;
+	this.damage = 1;
+	this.maxVelocity = 0.1;
+	this.acceleration = 0.025;
+}

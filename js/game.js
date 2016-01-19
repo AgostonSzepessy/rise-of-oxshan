@@ -33,18 +33,19 @@ function PlayState() {
 	this.camera = new Camera(0, 0, canvasWidth, canvasHeight);
 	this.camera.setHeight(canvasHeight);
 	this.camera.setWidth(canvasWidth);
-	
-	var that = this;
-	
+		
 	this.tileMap = new TileMap();
 	this.player = new Player();
 	
 	this.tileMap = new TileMap();
 	
+	var that = this;
+	
 	this.tileMap.loadFile('/rise-of-oxshan/res/maps/level-1.json', function() {
 		that.continueLoadingLevel();
 	});
 	
+	this.enemies = [];
 	
 }
 
@@ -127,8 +128,19 @@ PlayState.prototype.continueLoadingLevel = function() {
 							this.tileMap.getObjectLayer('player').objects[0].positionY);
 	this.player.setTileMap(this.tileMap);
 	
-	console.log(this.tileMap.getObjectLayer('player').objects[0].positionY);
-	console.log(this.camera.positionY);
+	var enemyLayer = this.tileMap.getObjectLayer('enemies');
+	for(var i = 0; i < enemyLayer.objects.length; ++i) {
+		this.enemies[i] = new Wizard();
+		this.enemies[i].positionX = enemyLayer.objects[i].positionX;
+		console.log(this.enemies[i].positionX);
+		this.enemies[i].positionY = enemyLayer.objects[i].positionY;
+		this.enemies[i].setTileMap(this.tileMap);
+		this.enemies[i].setBounds(this.tileMap.mapLayers[0].width * 
+						  this.tileMap.mapLayers[0].tileWidth,
+						  this.tileMap.mapLayers[0].height * 
+						  this.tileMap.mapLayers[0].tileHeight);
+	}
+	
 };
 
 PlayState.prototype.update = function(dt) {
@@ -154,6 +166,10 @@ PlayState.prototype.update = function(dt) {
 		
 		this.player.update(dt, this.camera);
 		this.camera.checkBounds();
+		
+		for(var i = 0; i < this.enemies.length; ++i) {
+			this.enemies[i].update(dt);
+		}
 	
 	}
 };
@@ -162,7 +178,13 @@ PlayState.prototype.draw = function() {
     'use strict';
     clear('#655541');
 	this.tileMap.draw(this.camera);
+	
+	for(var i = 0; i < this.enemies.length; ++i) {
+		this.enemies[i].draw(this.camera);
+	}
+	
 	this.player.draw(this.camera);
+	
 	ctx.beginPath();
 	ctx.fillText(Game.elapsed, 10, 20);
 	ctx.closePath();
@@ -174,6 +196,7 @@ window.onload = function() {
 		grey_dot: '/rise-of-oxshan/res/grey_dot.png',
 		menu_text: '/rise-of-oxshan/res/menu-text.png',
 		player: '/rise-of-oxshan/res/player-final.png',
+		wizard: '/rise-of-oxshan/res/wizard.png'
 	};
 	
 	loadImages(sources, startGame);

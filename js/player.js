@@ -17,7 +17,7 @@ function Player() {
 	this.texture = Game.res.getImage('player');
 	this.acceleration = 0.025;
 	this.maxVelocity = 0.25;
-	this.maxFastVelocity = 0.75;
+	this.maxFastVelocity = 0.50;
 	
 	this.jumpSpeed = 2.5;
 	this.doubleJumpSpeed = 2;
@@ -427,6 +427,7 @@ Player.prototype.updateAnimation = function(dt) {
 	this.currentFrame = this.animations[this.currentAnimation].currentFrame;
 	
 	var prevHeight = this.height;
+	var prevWidth = this.width;
 	
 	this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
 	this.height = this.animations[this.currentAnimation].frames[this.currentFrame].height;

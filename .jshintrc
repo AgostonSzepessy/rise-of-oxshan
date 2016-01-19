@@ -17,6 +17,8 @@
 				 "ResourceManager": true,
 				 "GameStateManager": true,
 				 "AnimationFrame": true,
-				 "Animation": true
+				 "Animation": true,
+				 "Enemy": true,
+				 "Wizard": true
                }
 }
