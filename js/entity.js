@@ -168,7 +168,10 @@ Entity.prototype.checkMapCollision = function(dt) {
 };
 
 Entity.prototype.isInsideCamera = function(camera) {
-	// TODO: check if inside camera
+	if(this.positionX + this.width < camera.positionX || this.positionX > 
+	   camera.positionX + camera.width || this.positionY + this.height < 
+	   camera.positionY || this.positionY > camera.positionY + camera.width)
+		return false;
 	return true;
 };
 
