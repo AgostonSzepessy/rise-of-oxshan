@@ -32,6 +32,7 @@ function Player() {
 	this.shiftPressed = false;
 	
 	this.reachedLvlEndl = false;
+	this.dead = false;
 	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
@@ -364,7 +365,7 @@ Player.prototype.update = function(dt, camera) {
 	}
 	
 	if(this.positionY <= 0) this.positionY = 0;
-	if(this.positionY >= this.yBounds) {
+	if(this.positionY + this.height >= this.yBounds) {
 		this.positionY = this.yBounds - this.height;
 	}
 	
@@ -436,6 +437,9 @@ Player.prototype.updateAnimation = function(dt) {
 	this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
 	this.height = this.animations[this.currentAnimation].frames[this.currentFrame].height;
 	
+	// adjust height of player because some frames are larger than others
+	// the previous height is compared to the height of the current frame and 
+	// the necessary adjustments are made
 	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
 	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
 	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
