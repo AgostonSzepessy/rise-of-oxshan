@@ -37,11 +37,14 @@ function PlayState() {
 	this.tileMap = new TileMap();
 	this.player = new Player();
 	
-	this.tileMap = new TileMap();
+	this.levelPath = '/rise-of-oxshan/res/maps/level-';
+	this.currentLevel = 1;
+	this.loadNextLevel = false;
+	this.numLevels = 3;
 	
 	var that = this;
 	
-	this.tileMap.loadFile('/rise-of-oxshan/res/maps/level-1.json', function() {
+	this.tileMap.loadFile(this.levelPath + this.currentLevel + '.json', function() {
 		that.continueLoadingLevel();
 	});
 	
@@ -129,6 +132,7 @@ PlayState.prototype.continueLoadingLevel = function() {
 	this.player.setTileMap(this.tileMap);
 	
 	var enemyLayer = this.tileMap.getObjectLayer('enemies');
+	this.enemies.length = 0;
 	for(var i = 0; i < enemyLayer.objects.length; ++i) {
 		this.enemies[i] = new Wizard();
 		this.enemies[i].positionX = enemyLayer.objects[i].positionX;
@@ -144,34 +148,43 @@ PlayState.prototype.continueLoadingLevel = function() {
 };
 
 PlayState.prototype.update = function(dt) {
-	
-    if (Key.isKeyPressed(Key.SPACE)) {
-        Game.gsm.changeState(new MenuState());
-    }
-	
-	if(Game.levelLoaded) {
-		if(Key.isKeyPressed(Key.W)) {
-			this.player.setJumping(true);
+		
+	if(this.loadNextLevel) {
+		if(++this.currentLevel <= this.numLevels) {
+			this.tileMap = new TileMap();
+			this.player = new Player();
+			var that = this;
+			this.loadNextLevel = false;
+			this.tileMap.loadFile(this.levelPath + this.currentLevel + '.json', function() {
+				that.continueLoadingLevel();
+			});
 		}
-		
-		if(Key.isDown(Key.D)) this.player.movingRight = true;
-		else this.player.movingRight = false;
-		
-		if(Key.isDown(Key.A)) this.player.movingLeft = true;
-		else this.player.movingLeft = false;
-		
-		if(Key.isDown(Key.SHIFT)) this.player.shiftPressed = true;
-		else this.player.shiftPressed = false;
-		
-		
-		this.player.update(dt, this.camera);
-		this.camera.checkBounds();
-		
-		for(var i = 0; i < this.enemies.length; ++i) {
-			this.enemies[i].update(dt);
-		}
-	
 	}
+	
+	if(Key.isKeyPressed(Key.W)) {
+		this.player.setJumping(true);
+	}
+
+	if(Key.isDown(Key.D)) this.player.movingRight = true;
+	else this.player.movingRight = false;
+
+	if(Key.isDown(Key.A)) this.player.movingLeft = true;
+	else this.player.movingLeft = false;
+
+	if(Key.isDown(Key.SHIFT)) this.player.shiftPressed = true;
+	else this.player.shiftPressed = false;
+
+	this.player.update(dt, this.camera);
+	this.camera.checkBounds();
+	
+	if(this.player.reachedLvlEndl) {
+		this.loadNextLevel = true;
+	}
+
+	for(var i = 0; i < this.enemies.length; ++i) {
+		this.enemies[i].update(dt);
+	}
+	
 };
 
 PlayState.prototype.draw = function() {
@@ -190,7 +203,7 @@ PlayState.prototype.draw = function() {
 	ctx.closePath();
 };
 
-
+// list of all the resources needed
 window.onload = function() {
 	var sources = {
 		grey_dot: '/rise-of-oxshan/res/grey_dot.png',
@@ -202,6 +215,7 @@ window.onload = function() {
 	loadImages(sources, startGame);
 };
 
+// loads all the resources needed
 function loadImages(imgSources, callback) {
 	var images = {};
 	var loadedImages = 0;
@@ -234,7 +248,6 @@ function setInitialState() {
     'use strict';
     Game.gsm = new GameStateManager();
 	Game.res = new ResourceManager();
-	Game.levelLoaded = false;
 	Game.time = 0;
 	Game.elapsed = 0;
 	Game.totalFps = 0;

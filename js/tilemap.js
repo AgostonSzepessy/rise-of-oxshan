@@ -139,8 +139,9 @@ TileMap.prototype.getTileLayer = function(layerName) {
 	}
 };
 
+// Loads the level file. The file is a JSON file created by Tiled.
 TileMap.prototype.loadFile = function(pathToFile, callback) {
-	'use strict';
+	'use strict';	
 	var xhr = new XMLHttpRequest();
 	var that = this;
 	xhr.onreadystatechange = function() {
@@ -187,8 +188,6 @@ TileMap.prototype.loadFile = function(pathToFile, callback) {
 					}
 				}
 			}
-			
-			Game.levelLoaded = true;
 			
 			console.log('finished parsing tilemap. calling callback');
 			

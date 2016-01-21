@@ -31,6 +31,8 @@ function Player() {
 	this.movingLeft = false;
 	this.shiftPressed = false;
 	
+	this.reachedLvlEndl = false;
+	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
 	playerStanding[0] = new AnimationFrame();
@@ -357,6 +359,8 @@ Player.prototype.update = function(dt, camera) {
 	
 	if(this.positionX + this.width > this.xBounds) {
 		this.positionX = this.xBounds - this.width;
+		this.reachedLvlEndl = true;
+		return;
 	}
 	
 	if(this.positionY <= 0) this.positionY = 0;
