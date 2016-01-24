@@ -131,6 +131,7 @@ PlayState.prototype.continueLoadingLevel = function() {
 	this.player.setPosition(this.tileMap.getObjectLayer('player').objects[0].positionX,
 							this.tileMap.getObjectLayer('player').objects[0].positionY);
 	this.player.setTileMap(this.tileMap);
+	this.player.dead = false;
 	
 	var enemyLayer = this.tileMap.getObjectLayer('enemies');
 	this.enemies.length = 0;
@@ -184,6 +185,10 @@ PlayState.prototype.update = function(dt) {
 
 		if(this.player.reachedLvlEndl) {
 			this.loadNextLevel = true;
+		}
+		
+		if(this.player.dead) {
+			this.continueLoadingLevel();
 		}
 
 		for(var i = 0; i < this.enemies.length; ++i) {

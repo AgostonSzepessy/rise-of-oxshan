@@ -26,6 +26,7 @@ function Entity() {
 	// boundaries of the level
 	this.xBounds = 0;
 	this.yBounds = 0;
+	this.outOfYBounds = false;
 	
 	this.falling = true;
 	this.grounded = false;
@@ -101,7 +102,10 @@ Entity.prototype.checkMapCollision = function(dt) {
 	this.tempX = this.positionX;
 	this.tempY = this.positionY;
 	
-//	console.log(this.tileMap);
+	if(this.yDest + this.height >= this.yBounds) {
+		this.dead = true;
+		return;
+	}
 	
 	var tileLayer = this.tileMap.getTileLayer('Tile Layer 1');
 	
