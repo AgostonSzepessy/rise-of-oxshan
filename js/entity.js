@@ -42,22 +42,6 @@ Entity.prototype.setPosition = function(x, y) {
 	this.positionY = y;
 };
 
-Entity.prototype.getX = function() {
-	return this.positionX;
-};
-
-Entity.prototype.getY = function() {
-	return this.positionY;
-};
-
-Entity.prototype.getHeight = function() {
-	return this.height;
-};
-
-Entity.prototype.getWidth = function() {
-	return this.width;
-};
-
 Entity.prototype.setBounds = function(xBound, yBound) {
 	this.xBounds = xBound;
 	this.yBounds = yBound;
@@ -102,10 +86,10 @@ Entity.prototype.checkMapCollision = function(dt) {
 	this.tempX = this.positionX;
 	this.tempY = this.positionY;
 	
-	if(this.yDest + this.height >= this.yBounds) {
-		this.dead = true;
-		return;
-	}
+//	if(this.yDest + this.height >= this.yBounds) {
+//		this.outOfYBounds = true;
+//		return;
+//	}
 	
 	var tileLayer = this.tileMap.getTileLayer('Tile Layer 1');
 	

@@ -13,7 +13,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":20,
+         "height":0,
          "name":"player",
          "objects":[
                 {
@@ -29,8 +29,36 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":156.475190446778,
-                 "y":1023.26539015853
+                 "x":156.475,
+                 "y":1023.27
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":20,
+         "name":"enemies",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":2,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":891.496808729669,
+                 "y":1041.79534692197
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -39,7 +67,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":2,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "properties":
     {

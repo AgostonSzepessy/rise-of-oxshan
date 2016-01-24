@@ -364,14 +364,17 @@ Player.prototype.update = function(dt, camera) {
 		return;
 	}
 	
+	if(this.reachedLvlEndl)
+		return;
+	
 	if(this.positionY <= 0) this.positionY = 0;
 	if(this.positionY >= this.yBounds) {
 		this.positionY = this.yBounds - this.height;
 	}
 	
-	if(this.outOfYBounds) {
-		this.dead = true;
-	}
+//	if(this.outOfYBounds) {
+//		this.dead = true;
+//	}
 	
 	camera.setPositionX(this.positionX - camera.width / 2);
 };

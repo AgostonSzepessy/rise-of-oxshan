@@ -152,6 +152,7 @@ TileMap.prototype.loadFile = function(pathToFile, callback) {
 			
 			var lvlHeight = levelData.height;
 			var lvlWidth = levelData.width;
+			console.log(pathToFile);
 			
 			// tilemap tile data
 			var tilesets = levelData.tilesets;

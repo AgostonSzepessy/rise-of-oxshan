@@ -123,7 +123,6 @@ PlayState.prototype.continueLoadingLevel = function() {
 	this.camera.setPosition(0, this.tileMap.mapLayers[0].height * 
 							this.tileMap.mapLayers[0].tileHeight - canvasHeight);
 	
-	console.log('setup player');
 	this.player.setBounds(this.tileMap.mapLayers[0].width * 
 						  this.tileMap.mapLayers[0].tileWidth,
 						  this.tileMap.mapLayers[0].height * 
@@ -132,6 +131,7 @@ PlayState.prototype.continueLoadingLevel = function() {
 							this.tileMap.getObjectLayer('player').objects[0].positionY);
 	this.player.setTileMap(this.tileMap);
 	this.player.dead = false;
+	this.player.outOfYBounds = false;
 	
 	var enemyLayer = this.tileMap.getObjectLayer('enemies');
 	this.enemies.length = 0;
@@ -154,7 +154,7 @@ PlayState.prototype.update = function(dt) {
 		
 	if(this.loadNextLevel) {
 		if(++this.currentLevel <= this.numLevels) {
-			console.log('loading next level');
+			console.log('loading next level: ' + this.currentLevel);
 			this.tileMap = new TileMap();
 			this.player = new Player();
 			var that = this;
@@ -167,6 +167,13 @@ PlayState.prototype.update = function(dt) {
 	}
 	
 	if(this.finishedLoadingLevel) {
+		
+		if(this.player.positionY + this.player.dy * dt + this.player.height >= 
+		   this.player.yBounds || this.player.dead) {
+			console.log('player dying');
+			this.continueLoadingLevel();
+		}
+		
 		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);
 		}
@@ -185,10 +192,6 @@ PlayState.prototype.update = function(dt) {
 
 		if(this.player.reachedLvlEndl) {
 			this.loadNextLevel = true;
-		}
-		
-		if(this.player.dead) {
-			this.continueLoadingLevel();
 		}
 
 		for(var i = 0; i < this.enemies.length; ++i) {
