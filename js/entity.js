@@ -101,6 +101,8 @@ Entity.prototype.checkMapCollision = function(dt) {
 	this.tempX = this.positionX;
 	this.tempY = this.positionY;
 	
+//	console.log(this.tileMap);
+	
 	var tileLayer = this.tileMap.getTileLayer('Tile Layer 1');
 	
 	// current row and column (multiples of tile width & height) that the player
