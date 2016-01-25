@@ -31,6 +31,8 @@ function Entity() {
 	this.falling = true;
 	this.grounded = false;
 	
+	this.dead = false;
+	
 	this.facingRight = true;
 	this.currentAnimation = 0;
 	this.currentFrame = 0;
@@ -83,6 +85,12 @@ Entity.prototype.getCorners = function(x, y) {
 Entity.prototype.checkMapCollision = function(dt) {
 	this.xDest = this.positionX + this.dx * dt;
 	this.yDest = this.positionY + this.dy * dt;
+	
+	if(this.yDest + this.height >= this.yBounds) {
+		this.dead = true;
+		return;
+	}
+	
 	this.tempX = this.positionX;
 	this.tempY = this.positionY;
 	
