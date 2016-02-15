@@ -35,8 +35,8 @@ function Player() {
 	this.reachedLvlEndl = false;
 	this.dead = false;
 	
-	this.width = 36;
-	this.height = 58;
+//	this.width = 36;
+//	this.height = 58;
 	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
@@ -279,8 +279,8 @@ function Player() {
 	this.animations[this.PLAYER_FALLING_LEFT] = new Animation(playerFallingLeft);
 	this.animations[this.PLAYER_FALLING_LEFT].delay = -1;
 	
-	this.drawWidth = this.animations[this.currentAnimation].frames[0].width;
-	this.drawHeight = this.animations[this.currentAnimation].frames[0].height;
+	this.width = this.animations[this.currentAnimation].frames[0].width;
+	this.height = this.animations[this.currentAnimation].frames[0].height;
 }
 
 Player.prototype.setJumping = function(jumping) {
@@ -388,8 +388,8 @@ Player.prototype.update = function(dt, camera) {
 };
 
 Player.prototype.draw = function(camera) {	
-	camera.draw(this.texture, this.positionX, this.positionY, this.drawWidth,
-			   	this.drawHeight, 
+	camera.draw(this.texture, this.positionX, this.positionY, this.width,
+			   	this.height, 
 				this.animations[this.currentAnimation].frames[this.currentFrame].positionX,
 			   this.animations[this.currentAnimation].frames[this.currentFrame].positionY);
 	ctx.beginPath();
@@ -456,28 +456,27 @@ Player.prototype.updateAnimation = function(dt) {
 	var prevHeight = this.height;
 	var prevWidth = this.width;
 	
-	this.drawWidth = this.animations[this.currentAnimation].frames[this.currentFrame].width;
-	this.drawHeight = this.animations[this.currentAnimation].frames[this.currentFrame].height;
+	// take care of stuttering when player is standing on the left edge of a tile
+	if(this.currentAnimation == this.PLAYER_FALLING_LEFT || this.currentAnimation == this.PLAYER_FALLING_RIGHT) {
+		this.width = this.animations[this.PLAYER_STANDING_LEFT].frames[0].width;
+		this.height = this.animations[this.PLAYER_STANDING_LEFT].frames[0].height;
+	}
+	else {
+		this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
+		this.height = this.animations[this.currentAnimation].frames[this.currentFrame].height;
+	}
+	
 	
 	// adjust height of player because some frames are larger than others
 	// the previous height is compared to the height of the current frame and 
 	// the necessary adjustments are made
-//	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
-//	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
-//	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
-//		if(this.height > prevHeight && !this.falling)
-//			this.tempY -= this.height - prevHeight;
-//		else if(this.height < prevHeight)
-//			this.tempY += prevHeight - this.height;
-//	}
-	
-//	if(this.currentAnimation == this.PLAYER_FALLING_LEFT || this.currentAnimation == 
-//	   this.PLAYER_FALLING_RIGHT) {
-//		if(this.width > prevWidth)
-//			this.tempX = this.tempX - (this.width / 2 - prevWidth / 2);
-//		else if(this.width < prevWidth)
-//			this.tempX = this.tempX + (prevWidth / 2 - this.width / 2);
-//	}
-	
+	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
+	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
+	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
+		if(this.height > prevHeight && !this.falling)
+			this.tempY -= this.height - prevHeight;
+		else if(this.height < prevHeight)
+			this.tempY += prevHeight - this.height;
+	}	
 	
 };
