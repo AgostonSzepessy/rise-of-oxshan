@@ -165,6 +165,14 @@ Entity.prototype.checkMapCollision = function(dt) {
 	}
 };
 
+Entity.prototype.intersects = function(entity) {
+	if(this.positionX + this.width < entity.positionX || this.positionX >
+	  entity.positionX + entity.width || this.positionY + this.height <
+	  entity.positionY || this.positionY > entity.positionY + entity.width)
+		return false;
+	return true;
+}
+
 Entity.prototype.isInsideCamera = function(camera) {
 	if(this.positionX + this.width < camera.positionX || this.positionX > 
 	   camera.positionX + camera.width || this.positionY + this.height < 

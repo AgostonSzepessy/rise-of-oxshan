@@ -175,7 +175,7 @@ PlayState.prototype.update = function(dt) {
 		}
 		
 		if(Key.isKeyPressed(Key.SPACE)) this.player.attacking = true;
-		else this.player.attacking = false;
+//		else this.player.attacking = false;
 		
 		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);
@@ -199,6 +199,10 @@ PlayState.prototype.update = function(dt) {
 
 		for(var i = 0; i < this.enemies.length; ++i) {
 			this.enemies[i].update(dt);
+			if(this.player.intersects(this.enemies[i]) &&  this.player.attacking) {
+				console.log('asdfi');
+				this.enemies.splice(i, 1);
+			}
 		}
 	}
 	

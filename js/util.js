@@ -293,11 +293,13 @@ Animation.prototype.update = function(dt) {
 	this.time += dt;
 	
 	if(this.time > this.delay) {
+		console.log('updating frame');
 		this.time = 0;
 		this.currentFrame++;
-		this.timesPlayed++;
+		
 	}
 	if(this.currentFrame >= this.frames.length) {
 		this.currentFrame = 0;
+		this.timesPlayed++;
 	}
 };

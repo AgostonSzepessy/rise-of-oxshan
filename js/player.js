@@ -35,9 +35,6 @@ function Player() {
 	this.reachedLvlEndl = false;
 	this.dead = false;
 	
-//	this.width = 36;
-//	this.height = 58;
-	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
 	playerStanding[0] = new AnimationFrame();
@@ -261,7 +258,7 @@ function Player() {
 	this.animations[this.PLAYER_FALLING_RIGHT].delay = -1;
 	
 	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
-	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 200;
+	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 110;
 	
 	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
 	
@@ -355,8 +352,14 @@ Player.prototype.update = function(dt, camera) {
 	}
 	
 	if(this.falling && !this.jumping) {
-			this.dy += this.gravity;
-			if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
+		this.dy += this.gravity;
+		if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
+	}
+	
+	if(this.currentAnimation == this.PLAYER_ATTACKING_RIGHT ||
+	  this.currentAnimation == this.PLAYER_ATTACKING_LEFT) {
+		if(this.animations[this.currentAnimation].timesPlayed > 0)
+			this.attacking = false;
 	}
 
 	this.checkMapCollision(dt);
@@ -380,10 +383,6 @@ Player.prototype.update = function(dt, camera) {
 		this.positionY = this.yBounds - this.height;
 	}
 	
-//	if(this.outOfYBounds) {
-//		this.dead = true;
-//	}
-	
 	camera.setPositionX(this.positionX - camera.width / 2);
 };
 
@@ -401,10 +400,13 @@ Player.prototype.draw = function(camera) {
 };
 
 Player.prototype.updateAnimation = function(dt) {
+	// set animation, ordered by priority
 	if(this.facingRight) {
 		if(this.attacking) {
-			this.clearAnimation();
-			this.currentAnimation = this.PLAYER_ATTACKING_RIGHT;
+			if(this.currentAnimation != this.PLAYER_ATTACKING_RIGHT) {
+				this.clearAnimation();
+				this.currentAnimation = this.PLAYER_ATTACKING_RIGHT;
+			}
 		}
 		else if(this.dy > 0) {
 			if(this.currentAnimation != this.PLAYER_FALLING_RIGHT) {
@@ -427,7 +429,13 @@ Player.prototype.updateAnimation = function(dt) {
 	}
 	
 	if(!this.facingRight) {
-		if(this.dy > 0) {
+		if(this.attacking) {
+			if(this.currentAnimation != this.PLAYER_ATTACKING_LEFT) {
+				this.clearAnimation();
+				this.currentAnimation = this.PLAYER_ATTACKING_LEFT;
+			}
+		}
+		else if(this.dy > 0) {
 			if(this.currentAnimation != this.PLAYER_FALLING_LEFT) {
 				this.clearAnimation();
 				this.currentAnimation = this.PLAYER_FALLING_LEFT;
