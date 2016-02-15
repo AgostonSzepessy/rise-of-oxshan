@@ -29,10 +29,14 @@ function Player() {
 	
 	this.movingRight = false;
 	this.movingLeft = false;
+	this.attacking = false;
 	this.shiftPressed = false;
 	
 	this.reachedLvlEndl = false;
 	this.dead = false;
+	
+	this.width = 36;
+	this.height = 58;
 	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
@@ -257,6 +261,7 @@ function Player() {
 	this.animations[this.PLAYER_FALLING_RIGHT].delay = -1;
 	
 	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
+	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 200;
 	
 	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
 	
@@ -267,14 +272,15 @@ function Player() {
 	this.animations[this.PLAYER_WALKING_LEFT].delay = 110;
 	
 	this.animations[this.PLAYER_ATTACKING_LEFT] = new Animation(playerAttackingLeft);
+	this.animations[this.PLAYER_ATTACKING_LEFT].delay = 110;
+	
 	this.animations[this.PLAYER_DYING_LEFT] = new Animation(playerDyingLeft);
 	
 	this.animations[this.PLAYER_FALLING_LEFT] = new Animation(playerFallingLeft);
 	this.animations[this.PLAYER_FALLING_LEFT].delay = -1;
 	
-	this.width = this.animations[this.currentAnimation].frames[0].width;
-	this.height = this.animations[this.currentAnimation].frames[0].height;
-	
+	this.drawWidth = this.animations[this.currentAnimation].frames[0].width;
+	this.drawHeight = this.animations[this.currentAnimation].frames[0].height;
 }
 
 Player.prototype.setJumping = function(jumping) {
@@ -287,53 +293,55 @@ Player.prototype.setJumping = function(jumping) {
 	}
 };
 
-Player.prototype.update = function(dt, camera) {		
-	if(this.movingRight) {
-		if(this.dx > 0) this.facingRight = true;
-		
-		this.dx += this.acceleration;
-		if(this.shiftPressed) {
-			if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
+Player.prototype.update = function(dt, camera) {
+	if(!this.attacking) {
+		if(this.movingRight) {
+			if(this.dx > 0) this.facingRight = true;
+
+			this.dx += this.acceleration;
+			if(this.shiftPressed) {
+				if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
+			}
+			if(!this.shiftPressed && this.dx > this.maxVelocity) {
+				this.dx = this.maxVelocity;
+			}
 		}
-		if(!this.shiftPressed && this.dx > this.maxVelocity) {
-			this.dx = this.maxVelocity;
+
+		else if(this.movingLeft) {
+			if(this.dx < 0) this.facingRight = false;
+
+			this.dx -= this.acceleration;
+			if(this.shiftPressed) {
+				if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
+			}
+			else if(!this.shiftPressed && this.dx < -this.maxVelocity) {
+				this.dx = -this.maxVelocity;
+			}
 		}
-	}
-	
-	else if(this.movingLeft) {
-		if(this.dx < 0) this.facingRight = false;
-		
-		this.dx -= this.acceleration;
-		if(this.shiftPressed) {
-			if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
+
+		else {
+			this.dx *= 0.1;
+			if(this.dx < 0.0001 && this.dx > -0.0001) {
+				this.dx = 0;
+			}
 		}
-		else if(!this.shiftPressed && this.dx < -this.maxVelocity) {
-			this.dx = -this.maxVelocity;
+
+		if(this.jumping) {
+			this.dy -= this.jumpSpeed;
+			this.falling = true;
+			this.jumping = false;
+			this.mayJump = false;
+			this.grounded = false;
+			this.mayJumpAgain = true;
 		}
-	}
-	
-	else {
-		this.dx *= 0.1;
-		if(this.dx < 0.0001 && this.dx > -0.0001) {
-			this.dx = 0;
+
+		if(this.doubleJumping) {
+			this.dy -= this.doubleJumpSpeed;
+			this.doubleJumping = false;
+			this.mayJumpAgain = false;
+			this.falling = true;
+			this.grounded = false;
 		}
-	}
-	
-	if(this.jumping) {
-		this.dy -= this.jumpSpeed;
-		this.falling = true;
-		this.jumping = false;
-		this.mayJump = false;
-		this.grounded = false;
-		this.mayJumpAgain = true;
-	}
-	
-	if(this.doubleJumping) {
-		this.dy -= this.doubleJumpSpeed;
-		this.doubleJumping = false;
-		this.mayJumpAgain = false;
-		this.falling = true;
-		this.grounded = false;
 	}
 	
 	if(this.grounded) {
@@ -380,8 +388,8 @@ Player.prototype.update = function(dt, camera) {
 };
 
 Player.prototype.draw = function(camera) {	
-	camera.draw(this.texture, this.positionX, this.positionY, this.width,
-			   	this.height, 
+	camera.draw(this.texture, this.positionX, this.positionY, this.drawWidth,
+			   	this.drawHeight, 
 				this.animations[this.currentAnimation].frames[this.currentFrame].positionX,
 			   this.animations[this.currentAnimation].frames[this.currentFrame].positionY);
 	ctx.beginPath();
@@ -394,7 +402,11 @@ Player.prototype.draw = function(camera) {
 
 Player.prototype.updateAnimation = function(dt) {
 	if(this.facingRight) {
-		if(this.dy > 0) {
+		if(this.attacking) {
+			this.clearAnimation();
+			this.currentAnimation = this.PLAYER_ATTACKING_RIGHT;
+		}
+		else if(this.dy > 0) {
 			if(this.currentAnimation != this.PLAYER_FALLING_RIGHT) {
 				this.clearAnimation();
 				this.currentAnimation = this.PLAYER_FALLING_RIGHT;
@@ -444,20 +456,28 @@ Player.prototype.updateAnimation = function(dt) {
 	var prevHeight = this.height;
 	var prevWidth = this.width;
 	
-	this.width = this.animations[this.currentAnimation].frames[this.currentFrame].width;
-	this.height = this.animations[this.currentAnimation].frames[this.currentFrame].height;
+	this.drawWidth = this.animations[this.currentAnimation].frames[this.currentFrame].width;
+	this.drawHeight = this.animations[this.currentAnimation].frames[this.currentFrame].height;
 	
 	// adjust height of player because some frames are larger than others
 	// the previous height is compared to the height of the current frame and 
 	// the necessary adjustments are made
-	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
-	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
-	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
-		if(this.height > prevHeight && !this.falling)
-			this.tempY -= this.height - prevHeight;
-		else if(this.height < prevHeight)
-			this.tempY += prevHeight - this.height;
-	}
+//	if(this.currentAnimation != this.PLAYER_JUMPING_RIGHT || this.currentAnimation != 
+//	   this.PLAYER_FALLING_RIGHT || this.currentAnimation != this.PLAYER_JUMPING_LEFT ||
+//	  this.currentAnimation != this.PLAYER_FALLING_LEFT) {
+//		if(this.height > prevHeight && !this.falling)
+//			this.tempY -= this.height - prevHeight;
+//		else if(this.height < prevHeight)
+//			this.tempY += prevHeight - this.height;
+//	}
+	
+//	if(this.currentAnimation == this.PLAYER_FALLING_LEFT || this.currentAnimation == 
+//	   this.PLAYER_FALLING_RIGHT) {
+//		if(this.width > prevWidth)
+//			this.tempX = this.tempX - (this.width / 2 - prevWidth / 2);
+//		else if(this.width < prevWidth)
+//			this.tempX = this.tempX + (prevWidth / 2 - this.width / 2);
+//	}
 	
 	
 };

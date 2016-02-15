@@ -112,16 +112,6 @@ MenuState.prototype.handleInput = function() {
 // PlayState - the state where the player actually plays the game
 PlayState.prototype = new GameState();
 
-//PlayState.prototype.loadLevel = function(level) {
-//	this.tileMap = new TileMap();
-//	this.player = new Player();
-//	var that = this;
-//	this.loadNextLevel = false;
-//	this.tileMap.loadFile(this.levelPath + this.currentLevel + '.json', function() {
-//		that.continueLoadingLevel();
-//	});
-//};
-
 PlayState.prototype.continueLoadingLevel = function() {
 	console.log('continue loading level');
 	
@@ -183,6 +173,9 @@ PlayState.prototype.update = function(dt) {
 			console.log('player dying');
 			this.continueLoadingLevel();
 		}
+		
+		if(Key.isKeyPressed(Key.SPACE)) this.player.attacking = true;
+		else this.player.attacking = false;
 		
 		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);

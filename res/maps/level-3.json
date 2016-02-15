@@ -41,7 +41,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":20,
+         "height":0,
          "name":"enemies",
          "objects":[
                 {
@@ -57,17 +57,49 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":891.496808729669,
-                 "y":1041.79534692197
+                 "x":891.497,
+                 "y":1041.8
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2635.37162857731,
+                 "y":1031.50092649784
+                }, 
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":4,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":3922.17418159358,
+                 "y":1056.20753551575
                 }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":70,
+         "width":0,
          "x":0,
          "y":0
         }],
- "nextobjectid":3,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "properties":
     {
