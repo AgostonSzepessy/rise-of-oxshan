@@ -230,7 +230,8 @@ window.onload = function() {
 		grey_dot: '/rise-of-oxshan/res/grey_dot.png',
 		menu_text: '/rise-of-oxshan/res/menu-text.png',
 		player: '/rise-of-oxshan/res/player-final.png',
-		wizard: '/rise-of-oxshan/res/wizard.png'
+		wizard: '/rise-of-oxshan/res/wizard.png',
+		fireball: '/rise-of-oxshan/res/fireball.png'
 	};
 	
 	loadImages(sources, startGame);
