@@ -50,6 +50,7 @@ function PlayState() {
 	});
 	
 	this.enemies = [];
+	this.projectiles = [];
 	
 }
 
@@ -174,8 +175,35 @@ PlayState.prototype.update = function(dt) {
 			this.continueLoadingLevel();
 		}
 		
-		if(Key.isKeyPressed(Key.SPACE)) this.player.attacking = true;
-//		else this.player.attacking = false;
+		// player attacking: add a new fireball
+		if(Key.isKeyPressed(Key.SPACE)) {
+			this.player.attacking = true;
+			this.projectiles.push(new Fireball());
+			var index = this.projectiles.length - 1;
+			this.projectiles[index].tileMap = this.tileMap;
+			this.projectiles[index].positionX = this.player.positionX + 
+				this.player.width;
+			this.projectiles[index].positionY = this.player.positionY / 2;
+			this.projectiles[index].setBounds(this.tileMap.mapLayers[0].width * 
+						  this.tileMap.mapLayers[0].tileWidth,
+						  this.tileMap.mapLayers[0].height * 
+						  this.tileMap.mapLayers[0].tileHeight);
+			
+			// set the fireball's direction in front of the player
+			if(this.player.facingRight) {
+				this.projectiles[index].setDirection(parseInt(this.player.positionX + this.player.width), 
+													 parseInt(this.player.positionX + this.player.width + 1), 
+													 parseInt(this.player.positionY + this.player.height / 4), 
+													 parseInt(this.player.positionY + this.player.height / 4));
+			}
+			else {
+				this.projectiles[index].setDirection(parseInt(this.player.positionX), 
+													 parseInt(this.player.positionX - 1), 
+													 parseInt(this.player.positionY + this.player.height / 4), 
+													 parseInt(this.player.positionY + this.player.height / 4));
+			}
+		}
+		
 		
 		if(Key.isKeyPressed(Key.W)) {
 			this.player.setJumping(true);
@@ -196,12 +224,29 @@ PlayState.prototype.update = function(dt) {
 		if(this.player.reachedLvlEndl) {
 			this.loadNextLevel = true;
 		}
-
+		
+		// update enemies
 		for(var i = 0; i < this.enemies.length; ++i) {
 			this.enemies[i].update(dt);
 			if(this.player.intersects(this.enemies[i]) &&  this.player.attacking) {
-				console.log('asdfi');
 				this.enemies.splice(i, 1);
+			}
+		}
+		// update projectiles	
+		for(i = 0; i < this.projectiles.length; ++i) {
+			this.projectiles[i].update(dt);
+			if(this.projectiles[i].dead) {
+				this.projectiles.splice(i, 1);
+			}
+		}
+		
+		// check for collision between projectiles and enemies
+		for(i = 0; i < this.enemies.length; ++i) {
+			for(var j = 0; j < this.projectiles.length; ++j) {
+				if(this.projectiles[j].intersects(this.enemies[i])) {
+					this.projectiles.splice(j, 1);
+					this.enemies.splice(i, 1);
+				}
 			}
 		}
 	}
@@ -215,6 +260,10 @@ PlayState.prototype.draw = function() {
 	
 	for(var i = 0; i < this.enemies.length; ++i) {
 		this.enemies[i].draw(this.camera);
+	}
+	
+	for(i = 0; i < this.projectiles.length; ++i) {
+		this.projectiles[i].draw(this.camera);
 	}
 	
 	this.player.draw(this.camera);
