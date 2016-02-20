@@ -242,16 +242,16 @@ PlayState.prototype.update = function(dt) {
 							  this.tileMap.mapLayers[0].tileHeight);
 				
 				if(this.enemies[i].facingRight) {
-					this.projectiles[i].setDirection(parseInt(this.enemies[i].positionX + this.enemies[i].width), 
-													 parseInt(this.player.positionX + this.player.width / 2), 
-													 parseInt(this.enemies[i].positionY + this.enemies[i].height / 2), 
-													 parseInt(this.player.positionY + this.player.height / 2));
+					this.projectiles[i].setDirection(this.enemies[i].positionX + this.enemies[i].width, 
+													 this.player.positionX + this.player.width / 2, 
+													 this.enemies[i].positionY + this.enemies[i].height / 2, 
+													 this.player.positionY + this.player.height / 2);
 				}
 				else {
-					this.projectiles[i].setDirection(parseInt(this.enemies[i].positionX), 
-													 parseInt(this.player.positionX + this.player.width / 2), 
-													 parseInt(this.enemies[i].positionY + this.enemies[i].height / 4), 
-													 parseInt(this.player.positionY + this.player.height / 2));
+					this.projectiles[i].setDirection(this.enemies[i].positionX, 
+													 this.player.positionX + this.player.width / 2, 
+													 this.enemies[i].positionY + this.enemies[i].height / 2, 
+													 this.player.positionY + this.player.height / 2);
 				}
 			}
 		}
@@ -267,8 +267,6 @@ PlayState.prototype.update = function(dt) {
 		for(i = 0; i < this.enemies.length; ++i) {
 			for(var j = 0; j < this.projectiles.length; ++j) {
 				if(this.projectiles[j] instanceof Lightning) {
-//					console.log(this.projectiles[j].positionX + ', ' + this.projectiles[j].positionY);
-//					console.log(this.player.positionY);
 				}
 				
 				if(this.projectiles[j] instanceof Fireball) {
