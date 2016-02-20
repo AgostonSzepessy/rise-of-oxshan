@@ -3,10 +3,10 @@ Fireball.prototype = new Entity();
 function Fireball() {
 	Entity.call(this);
 	this.texture = Game.res.getImage('fireball');
-	this.height = this.texture.height;
-	this.width = this.texture.width;
-	this.maxVelocity = 0.1;
-	
+	this.height = 23;
+	this.width = 41;
+	this.maxVelocity = 0.55;
+	this.sourceX = 0;
 }
 
 Fireball.prototype.setDirection = function(originX, dirX, originY, dirY) {
@@ -17,9 +17,9 @@ Fireball.prototype.setDirection = function(originX, dirX, originY, dirY) {
 	this.dx = this.maxVelocity * (distanceX / norm);
 	this.dy = this.maxVelocity * (distanceY / norm);
 	
-//	console.log(this.dy);
-	console.log(this.dx);
-
+	if(this.dx < 0)
+		this.sourceX = 42;
+	
 	this.positionX = originX;
 	this.positionY = originY;
 };
@@ -42,6 +42,6 @@ Fireball.prototype.update = function(dt) {
 Fireball.prototype.draw = function(camera) {
 	if(this.isInsideCamera(camera)) {
 		camera.draw(this.texture, this.positionX, this.positionY, this.width,
-			   	this.height, 0, 0);
+			   	this.height, this.sourceX, 0);
 	}
 };

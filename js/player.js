@@ -258,7 +258,7 @@ function Player() {
 	this.animations[this.PLAYER_FALLING_RIGHT].delay = -1;
 	
 	this.animations[this.PLAYER_ATTACKING_RIGHT] = new Animation(playerAttacking);
-	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 110;
+	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 75;
 	
 	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
 	
@@ -266,7 +266,7 @@ function Player() {
 	this.animations[this.PLAYER_STANDING_LEFT].delay = -1;
 	
 	this.animations[this.PLAYER_WALKING_LEFT] = new Animation(playerWalkingLeft);
-	this.animations[this.PLAYER_WALKING_LEFT].delay = 110;
+	this.animations[this.PLAYER_WALKING_LEFT].delay = 75;
 	
 	this.animations[this.PLAYER_ATTACKING_LEFT] = new Animation(playerAttackingLeft);
 	this.animations[this.PLAYER_ATTACKING_LEFT].delay = 110;

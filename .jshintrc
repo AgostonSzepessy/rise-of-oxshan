@@ -19,6 +19,7 @@
 				 "AnimationFrame": true,
 				 "Animation": true,
 				 "Enemy": true,
-				 "Wizard": true
+				 "Wizard": true,
+				 "Fireball": true
                }
 }
