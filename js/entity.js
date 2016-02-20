@@ -171,7 +171,7 @@ Entity.prototype.intersects = function(entity) {
 	  entity.positionY || this.positionY > entity.positionY + entity.width)
 		return false;
 	return true;
-}
+};
 
 Entity.prototype.isInsideCamera = function(camera) {
 	if(this.positionX + this.width < camera.positionX || this.positionX > 

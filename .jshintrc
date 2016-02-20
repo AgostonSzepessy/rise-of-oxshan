@@ -20,6 +20,7 @@
 				 "Animation": true,
 				 "Enemy": true,
 				 "Wizard": true,
-				 "Fireball": true
+				 "Fireball": true,
+				 "Lightning": true
                }
 }

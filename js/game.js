@@ -174,12 +174,12 @@ PlayState.prototype.update = function(dt) {
 			console.log('player dying');
 			this.continueLoadingLevel();
 		}
-		
+		var index = 0;
 		// player attacking: add a new fireball
 		if(Key.isKeyPressed(Key.SPACE)) {
 			this.player.attacking = true;
 			this.projectiles.push(new Fireball());
-			var index = this.projectiles.length - 1;
+			index = this.projectiles.length - 1;
 			this.projectiles[index].tileMap = this.tileMap;
 			this.projectiles[index].positionX = this.player.positionX + 
 				this.player.width;
@@ -227,9 +227,32 @@ PlayState.prototype.update = function(dt) {
 		
 		// update enemies
 		for(var i = 0; i < this.enemies.length; ++i) {
-			this.enemies[i].update(dt);
-			if(this.player.intersects(this.enemies[i]) &&  this.player.attacking) {
-				this.enemies.splice(i, 1);
+			this.enemies[i].update(dt, this.player);
+			
+			if(this.enemies[i].readyToFire) {
+				this.projectiles.push(new Lightning());
+				index = this.projectiles.length - 1;
+				this.projectiles[index].tileMap = this.tileMap;
+				this.projectiles[index].positionX = this.enemies[i].positionX + 
+					this.player.width;
+				this.projectiles[index].positionY = this.enemies[i].positionY / 2;
+				this.projectiles[index].setBounds(this.tileMap.mapLayers[0].width * 
+							  this.tileMap.mapLayers[0].tileWidth,
+							  this.tileMap.mapLayers[0].height * 
+							  this.tileMap.mapLayers[0].tileHeight);
+				
+				if(this.enemies[i].facingRight) {
+					this.projectiles[i].setDirection(parseInt(this.enemies[i].positionX + this.enemies[i].width), 
+													 parseInt(this.player.positionX + this.player.width / 2), 
+													 parseInt(this.enemies[i].positionY + this.enemies[i].height / 2), 
+													 parseInt(this.player.positionY + this.player.height / 2));
+				}
+				else {
+					this.projectiles[i].setDirection(parseInt(this.enemies[i].positionX), 
+													 parseInt(this.player.positionX + this.player.width / 2), 
+													 parseInt(this.enemies[i].positionY + this.enemies[i].height / 4), 
+													 parseInt(this.player.positionY + this.player.height / 2));
+				}
 			}
 		}
 		// update projectiles	
@@ -243,9 +266,16 @@ PlayState.prototype.update = function(dt) {
 		// check for collision between projectiles and enemies
 		for(i = 0; i < this.enemies.length; ++i) {
 			for(var j = 0; j < this.projectiles.length; ++j) {
-				if(this.projectiles[j].intersects(this.enemies[i])) {
-					this.projectiles.splice(j, 1);
-					this.enemies.splice(i, 1);
+				if(this.projectiles[j] instanceof Lightning) {
+//					console.log(this.projectiles[j].positionX + ', ' + this.projectiles[j].positionY);
+//					console.log(this.player.positionY);
+				}
+				
+				if(this.projectiles[j] instanceof Fireball) {
+					if(this.projectiles[j].intersects(this.enemies[i])) {
+						this.projectiles.splice(j, 1);
+						this.enemies.splice(i, 1);
+					}
 				}
 			}
 		}
@@ -280,7 +310,8 @@ window.onload = function() {
 		menu_text: '/rise-of-oxshan/res/menu-text.png',
 		player: '/rise-of-oxshan/res/player-final.png',
 		wizard: '/rise-of-oxshan/res/wizard-spritesheet.png',
-		fireball: '/rise-of-oxshan/res/fireball.png'
+		fireball: '/rise-of-oxshan/res/fireball.png',
+		lightning: '/rise-of-oxshan/res/lightning.png'
 	};
 	
 	loadImages(sources, startGame);

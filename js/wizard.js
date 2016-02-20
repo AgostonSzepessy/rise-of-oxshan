@@ -19,6 +19,9 @@ function Wizard() {
 	standingRight[0].width = 50;
 	standingRight[0].height = 50;
 	
+	this.readyToFire = false;
+	this.fireCounter = 0;
+	
 	var walkingRight = new Array(8);
 	// walking is 50x50 frames
 	for(var i = 0; i < walkingRight.length; ++i) {
@@ -104,13 +107,12 @@ function Wizard() {
 	
 	this.width = this.animations[this.currentAnimation].frames[0].width;
 	this.height = this.animations[this.currentAnimation].frames[0].width;
-	
 }
 
 Wizard.prototype = Object.create(Enemy.prototype);
 Wizard.prototype.constructor = Wizard;
 
-Wizard.prototype.update = function(dt) {
+Wizard.prototype.update = function(dt, player) {
 	if(!this.falling) {
 		this.getCorners(this.positionX, this.yDest + 1);
 		if(!this.bottomLeftBlocked || !this.bottomRightBlocked) {
@@ -119,6 +121,15 @@ Wizard.prototype.update = function(dt) {
 		}
 	}
 	
+	
+	if(Math.abs(player.positionX - this.positionX) <= 1024) {
+		this.readyToFire = false;
+		this.fireCounter += dt;
+		if(this.fireCounter >= 1000) {
+			this.readyToFire = true;
+			this.fireCounter = 0;
+		}
+	}
 	
 	if(this.leftBlocked || this.positionX === 0) {
 		this.facingRight = true;
@@ -148,6 +159,7 @@ Wizard.prototype.update = function(dt) {
 	}
 	
 	this.checkMapCollision(dt);
+	this.updateAnimation(dt);
 	
 	this.setPosition(this.tempX, this.tempY);
 	
@@ -166,10 +178,30 @@ Wizard.prototype.update = function(dt) {
 Wizard.prototype.draw = function(camera) {
 	if(this.isInsideCamera(camera)) {
 		camera.draw(this.texture, this.positionX, this.positionY, this.width,
-			   	this.height, 0, 0);
+			   	this.height, 
+				this.animations[this.currentAnimation].frames[this.currentFrame].positionX, 
+				this.animations[this.currentAnimation].frames[this.currentFrame].positionY);
 	}
 };
 
 Wizard.prototype.updateAnimation = function(dt) {
+	if(this.facingRight) {
+		if(this.dx > 0) {
+			if(this.currentAnimation != this.WALKING_RIGHT) {
+				this.clearAnimation();
+				this.currentAnimation = this.WALKING_RIGHT;
+			}
+		}
+	}
+	else {
+		if(this.dx < 0) {
+			if(this.currentAnimation != this.WALKING_LEFT) {
+				this.clearAnimation();
+				this.currentAnimation = this.WALKING_LEFT;
+			}
+		}
+	}
 	
+	this.animations[this.currentAnimation].update(dt);
+	this.currentFrame = this.animations[this.currentAnimation].currentFrame;
 };
