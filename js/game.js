@@ -270,6 +270,11 @@ PlayState.prototype.update = function(dt) {
 		for(i = 0; i < this.enemies.length; ++i) {
 			for(var j = 0; j < this.projectiles.length; ++j) {
 				if(this.projectiles[j] instanceof Lightning) {
+					if(this.projectiles[j].intersects(this.player)) {
+						this.player.hit = true;
+						this.player.flashCounter = 0;
+						this.player.flashTimer = 0;
+					}
 				}
 				
 				if(this.projectiles[j] instanceof Fireball) {
@@ -299,9 +304,9 @@ PlayState.prototype.draw = function() {
 	
 	this.player.draw(this.camera);
 	
-	ctx.beginPath();
-	ctx.fillText(Game.elapsed, 10, 20);
-	ctx.closePath();
+//	ctx.beginPath();
+//	ctx.fillText(Game.elapsed, 10, 20);
+//	ctx.closePath();
 };
 
 // list of all the resources needed
@@ -312,7 +317,8 @@ window.onload = function() {
 		player: '/rise-of-oxshan/res/player-final.png',
 		wizard: '/rise-of-oxshan/res/wizard-spritesheet.png',
 		fireball: '/rise-of-oxshan/res/fireball.png',
-		lightning: '/rise-of-oxshan/res/lightning.png'
+		lightning: '/rise-of-oxshan/res/lightning.png',
+		heart: '/rise-of-oxshan/res/heart.png'
 	};
 	
 	loadImages(sources, startGame);

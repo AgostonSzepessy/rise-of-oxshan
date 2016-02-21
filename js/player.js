@@ -3,6 +3,7 @@ Player.prototype = new Entity();
 function Player() {
 	Entity.call(this);
 	
+	// list of animations
 	this.PLAYER_STANDING_RIGHT = 0;
 	this.PLAYER_WALKING_RIGHT = 1;
 	this.PLAYER_ATTACKING_RIGHT = 2;
@@ -19,6 +20,12 @@ function Player() {
 	this.maxVelocity = 0.25;
 	this.maxFastVelocity = 0.50;
 	
+	// player gets 5 health (he can be hit 5 times), and 3
+	// times to try again if he dies
+	this.health = 5;
+	this.lives = 3;
+	this.heartTexture = Game.res.getImage('heart');
+	
 	this.jumpSpeed = 2.5;
 	this.doubleJumpSpeed = 2;
 	this.jumping = false;
@@ -34,6 +41,14 @@ function Player() {
 	
 	this.reachedLvlEndl = false;
 	this.dead = false;
+	
+	// flash counter keeps track of the frames: player flashes every even frame
+	this.flashCounter = 0;
+	// counter to make sure the player flashes only for the right amount of time
+	this.flashTimer = 0;
+	// signals whether the player has been hit
+	this.hit = false;
+	this.drawPlayer = true;
 	
 	// specify where each frame is located on the spritesheet	
 	var playerStanding = new Array(1);
@@ -278,6 +293,8 @@ function Player() {
 	
 	this.width = this.animations[this.currentAnimation].frames[0].width;
 	this.height = this.animations[this.currentAnimation].frames[0].height;
+	
+	
 }
 
 Player.prototype.setJumping = function(jumping) {
@@ -341,6 +358,10 @@ Player.prototype.update = function(dt, camera) {
 		}
 	}
 	
+	if(this.attacking) {
+		this.dx = 0;
+	}
+	
 	if(this.grounded) {
 		this.mayJump = true;
 		this.mayJumpAgain = false;
@@ -354,6 +375,23 @@ Player.prototype.update = function(dt, camera) {
 	if(this.falling && !this.jumping) {
 		this.dy += this.gravity;
 		if(this.dy > this.terminalVelocity) this.dy = this.terminalVelocity;
+	}
+	
+	// if the player is hit, make him flash for half a second to signal that
+	// he has been damaged
+	if(this.hit) {
+		++this.flashCounter;
+		// flash every even frame
+		if(this.flashCounter % 2) {
+			this.drawPlayer = !this.drawPlayer;
+		}
+		this.flashTimer += dt;
+		if(this.flashTimer > 500) {
+			this.flashCounter = 0;
+			this.flashTimer = 0;
+			this.drawPlayer = true;
+			this.hit = false;
+		}
 	}
 	
 	if(this.currentAnimation == this.PLAYER_ATTACKING_RIGHT ||
@@ -386,17 +424,36 @@ Player.prototype.update = function(dt, camera) {
 	camera.setPositionX(this.positionX - camera.width / 2);
 };
 
-Player.prototype.draw = function(camera) {	
-	camera.draw(this.texture, this.positionX, this.positionY, this.width,
-			   	this.height, 
-				this.animations[this.currentAnimation].frames[this.currentFrame].positionX,
-			   this.animations[this.currentAnimation].frames[this.currentFrame].positionY);
-	ctx.beginPath();
-	ctx.fillStyle = "white";
-	ctx.fillText('Player dx is ' + this.dx, 0, 10);
-	ctx.fillText('this.falling = ' + this.falling, 0, 30);
-	ctx.fillText('this.grounded = ' + this.grounded, 0, 40);
-	ctx.closePath();
+Player.prototype.draw = function(camera) {
+	
+	for(var i = 0; i < this.health; ++i) {
+		ctx.beginPath();
+		ctx.drawImage(this.heartTexture, i * this.heartTexture.width + 5 + i, 5);
+		ctx.closePath();
+	}
+	
+	for(i = 0; i < this.lives; ++i) {
+		ctx.beginPath();
+		ctx.drawImage(this.texture, 314, 95, 30, 22, i * 30 + i + 5, 
+					  this.heartTexture.height + 10, 30, 22);
+		ctx.closePath();
+	}
+	
+	if(this.drawPlayer) {
+		camera.draw(this.texture, this.positionX, this.positionY, this.width,
+					this.height, 
+					this.animations[this.currentAnimation].frames[this.currentFrame].positionX,
+				   this.animations[this.currentAnimation].frames[this.currentFrame].positionY);
+	}
+	
+	
+	
+//	ctx.beginPath();
+//	ctx.fillStyle = "white";
+//	ctx.fillText('Player dx is ' + this.dx, 0, 10);
+//	ctx.fillText('this.falling = ' + this.falling, 0, 30);
+//	ctx.fillText('this.grounded = ' + this.grounded, 0, 40);
+//	ctx.closePath();
 };
 
 Player.prototype.updateAnimation = function(dt) {
