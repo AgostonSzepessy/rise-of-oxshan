@@ -26,8 +26,6 @@ Projectile.prototype.setDirection = function(originX, dirX, originY, dirY) {
 Projectile.prototype.update = function(dt) {
 	this.checkMapCollision(dt);
 	
-	console.log('updating');
-	
 	// check if bullet hit an enemy or out of bounds
 	if(this.bottomLeftBlocked || this.bottomRightBlocked || this.topLeftBlocked ||
 	   this.topRightBlocked || this.tempX < 0 || this.tempX + this.width> 

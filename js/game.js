@@ -149,6 +149,8 @@ PlayState.prototype.continueLoadingLevel = function() {
 	
 	this.finishedLoadingLevel = true;
 	
+	this.projectiles.splice(0, this.projectiles.length);
+	
 };
 
 PlayState.prototype.update = function(dt) {
@@ -231,28 +233,29 @@ PlayState.prototype.update = function(dt) {
 			
 			if(this.enemies[i].readyToFire) {
 				this.projectiles.push(new Lightning());
-				index = this.projectiles.length - 1;
-				this.projectiles[index].tileMap = this.tileMap;
-				this.projectiles[index].positionX = this.enemies[i].positionX + 
-					this.player.width;
-				this.projectiles[index].positionY = this.enemies[i].positionY / 2;
-				this.projectiles[index].setBounds(this.tileMap.mapLayers[0].width * 
-							  this.tileMap.mapLayers[0].tileWidth,
-							  this.tileMap.mapLayers[0].height * 
-							  this.tileMap.mapLayers[0].tileHeight);
-				
+				this.projectiles[this.projectiles.length - 1].tileMap = this.tileMap;
+				this.projectiles[this.projectiles.length - 1].positionX = this.enemies[i].positionX;
+				this.projectiles[this.projectiles.length - 1].positionY = this.enemies[i].positionY;
+				this.projectiles[this.projectiles.length - 1].setBounds(this.tileMap.mapLayers[0].width * 
+						  this.tileMap.mapLayers[0].tileWidth,
+						  this.tileMap.mapLayers[0].height * 
+						  this.tileMap.mapLayers[0].tileHeight);
 				if(this.enemies[i].facingRight) {
-					this.projectiles[i].setDirection(this.enemies[i].positionX + this.enemies[i].width, 
-													 this.player.positionX + this.player.width / 2, 
-													 this.enemies[i].positionY + this.enemies[i].height / 2, 
-													 this.player.positionY + this.player.height / 2);
+					this.projectiles[this.projectiles.length - 1].setDirection(this.enemies[i].positionX + 
+																			   this.enemies[i].width,
+																			  this.player.positionX,
+																			  this.enemies[i].positionY + 
+																			   this.enemies[i].height / 4,
+																			  this.player.positionY);
 				}
 				else {
-					this.projectiles[i].setDirection(this.enemies[i].positionX, 
-													 this.player.positionX + this.player.width / 2, 
-													 this.enemies[i].positionY + this.enemies[i].height / 2, 
-													 this.player.positionY + this.player.height / 2);
+					this.projectiles[this.projectiles.length - 1].setDirection(this.enemies[i].positionX,
+																			  this.player.positionX,
+																			  this.enemies[i].positionY + 
+																			   this.enemies[i].height / 4,
+																			  this.player.positionY);
 				}
+				
 			}
 		}
 		// update projectiles	
