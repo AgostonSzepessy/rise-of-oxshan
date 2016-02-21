@@ -27,11 +27,15 @@ Projectile.prototype.update = function(dt) {
 	this.checkMapCollision(dt);
 	
 	// check if bullet hit an enemy or out of bounds
-	if(this.bottomLeftBlocked || this.bottomRightBlocked || this.topLeftBlocked ||
-	   this.topRightBlocked || this.tempX < 0 || this.tempX + this.width> 
-	   this.xBounds || this.tempY < 0 || this.tempY + this.height >
-	   this.yBounds)
-		this.dead = true;   
+//	if(this.bottomLeftBlocked || this.bottomRightBlocked || this.topLeftBlocked ||
+//	   this.topRightBlocked || this.tempX < 0 || this.tempX + this.width> 
+//	   this.xBounds || this.tempY < 0 || this.tempY + this.height >
+//	   this.yBounds)
+//		this.dead = true;   
+	if(this.rightSideBlocked || this.leftSideBlocked || this.topSideBlocked || 
+	   this.bottomSideBlocked || this.tempX < 0 || this.tempX + this.width > 
+	   this.xBounds || this.tempY < 0 || this.tempY + this.height > this.yBounds)
+		this.dead = true;
 	else
 		this.setPosition(this.tempX, this.tempY);
 };
