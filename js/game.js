@@ -159,7 +159,10 @@ PlayState.prototype.update = function(dt) {
 		if(++this.currentLevel <= this.numLevels) {
 			console.log('loading next level: ' + this.currentLevel);
 			this.tileMap = new TileMap();
+			var prevPlayer = this.player;
 			this.player = new Player();
+			this.player.health = prevPlayer.health;
+			this.player.lives = prevPlayer.lives;
 			var that = this;
 			this.loadNextLevel = false;
 			this.finishedLoadingLevel = false;
@@ -172,8 +175,11 @@ PlayState.prototype.update = function(dt) {
 	if(this.finishedLoadingLevel) {
 		
 		if(this.player.positionY + this.player.dy * dt + this.player.height >= 
-		   this.player.yBounds || this.player.dead) {
+		   this.player.yBounds) {
 			console.log('player dying');
+			this.player.health = 5;
+		   this.player.lives--;
+		   this.player.hit = false;
 			this.continueLoadingLevel();
 		}
 		var index = 0;
@@ -282,6 +288,19 @@ PlayState.prototype.update = function(dt) {
 						this.projectiles.splice(j, 1);
 						this.enemies.splice(i, 1);
 					}
+				}
+			}
+		}
+		
+		// if player's life is depleted
+		if(this.player.dead) {
+			if(this.player.currentAnimation == this.player.PLAYER_DYING_RIGHT || 
+			   this.player.PLAYER_DYING_LEFT) { 
+				   if(this.player.animations[this.player.currentAnimation].timesPlayed > 0) {
+					   this.player.health = 5;
+					   this.player.lives--;
+					   this.player.hit = false;
+					   this.continueLoadingLevel();
 				}
 			}
 		}

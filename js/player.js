@@ -276,6 +276,7 @@ function Player() {
 	this.animations[this.PLAYER_ATTACKING_RIGHT].delay = 75;
 	
 	this.animations[this.PLAYER_DYING_RIGHT] = new Animation(playerDying);
+	this.animations[this.PLAYER_DYING_RIGHT].delay = 110;
 	
 	this.animations[this.PLAYER_STANDING_LEFT] = new Animation(playerStandingLeft);
 	this.animations[this.PLAYER_STANDING_LEFT].delay = -1;
@@ -287,6 +288,7 @@ function Player() {
 	this.animations[this.PLAYER_ATTACKING_LEFT].delay = 110;
 	
 	this.animations[this.PLAYER_DYING_LEFT] = new Animation(playerDyingLeft);
+	this.animations[this.PLAYER_DYING_LEFT].delay = 110;
 	
 	this.animations[this.PLAYER_FALLING_LEFT] = new Animation(playerFallingLeft);
 	this.animations[this.PLAYER_FALLING_LEFT].delay = -1;
@@ -308,69 +310,71 @@ Player.prototype.setJumping = function(jumping) {
 };
 
 Player.prototype.update = function(dt, camera) {
-	if(!this.attacking) {
-		if(this.movingRight) {
-			if(this.dx > 0) this.facingRight = true;
+	if(!this.dead) {
+		if(!this.attacking) {
+			if(this.movingRight) {
+				if(this.dx > 0) this.facingRight = true;
 
-			this.dx += this.acceleration;
-			if(this.shiftPressed) {
-				if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
+				this.dx += this.acceleration;
+				if(this.shiftPressed) {
+					if(this.dx > this.maxFastVelocity) this.dx = this.maxFastVelocity;
+				}
+				if(!this.shiftPressed && this.dx > this.maxVelocity) {
+					this.dx = this.maxVelocity;
+				}
 			}
-			if(!this.shiftPressed && this.dx > this.maxVelocity) {
-				this.dx = this.maxVelocity;
+
+			else if(this.movingLeft) {
+				if(this.dx < 0) this.facingRight = false;
+
+				this.dx -= this.acceleration;
+				if(this.shiftPressed) {
+					if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
+				}
+				else if(!this.shiftPressed && this.dx < -this.maxVelocity) {
+					this.dx = -this.maxVelocity;
+				}
+			}
+
+			else {
+				this.dx *= 0.1;
+				if(this.dx < 0.0001 && this.dx > -0.0001) {
+					this.dx = 0;
+				}
+			}
+
+			if(this.jumping) {
+				this.dy -= this.jumpSpeed;
+				this.falling = true;
+				this.jumping = false;
+				this.mayJump = false;
+				this.grounded = false;
+				this.mayJumpAgain = true;
+			}
+
+			if(this.doubleJumping) {
+				this.dy -= this.doubleJumpSpeed;
+				this.doubleJumping = false;
+				this.mayJumpAgain = false;
+				this.falling = true;
+				this.grounded = false;
 			}
 		}
 
-		else if(this.movingLeft) {
-			if(this.dx < 0) this.facingRight = false;
-
-			this.dx -= this.acceleration;
-			if(this.shiftPressed) {
-				if(this.dx < -this.maxFastVelocity) this.dx = -this.maxFastVelocity;
-			}
-			else if(!this.shiftPressed && this.dx < -this.maxVelocity) {
-				this.dx = -this.maxVelocity;
-			}
+		// can't move when attacking
+		if(this.attacking) {
+			this.dx = 0;
 		}
 
-		else {
-			this.dx *= 0.1;
-			if(this.dx < 0.0001 && this.dx > -0.0001) {
-				this.dx = 0;
-			}
-		}
-
-		if(this.jumping) {
-			this.dy -= this.jumpSpeed;
-			this.falling = true;
-			this.jumping = false;
-			this.mayJump = false;
-			this.grounded = false;
-			this.mayJumpAgain = true;
-		}
-
-		if(this.doubleJumping) {
-			this.dy -= this.doubleJumpSpeed;
-			this.doubleJumping = false;
+		if(this.grounded) {
+			this.mayJump = true;
 			this.mayJumpAgain = false;
-			this.falling = true;
-			this.grounded = false;
+			this.jumping = false;
 		}
 	}
-	
-	if(this.attacking) {
-		this.dx = 0;
-	}
-	
-	if(this.grounded) {
-		this.mayJump = true;
-		this.mayJumpAgain = false;
-		this.jumping = false;
-	}
-	
-	if(!this.falling) {
-		this.grounded = true;
-	}
+		if(!this.falling) {
+			this.grounded = true;
+		}
 	
 	if(this.falling && !this.jumping) {
 		this.dy += this.gravity;
@@ -379,7 +383,7 @@ Player.prototype.update = function(dt, camera) {
 	
 	// if the player is hit, make him flash for half a second to signal that
 	// he has been damaged
-	if(this.hit) {
+	if(this.hit && !this.dead) {
 		++this.flashCounter;
 		// flash every even frame
 		if(this.flashCounter % 2) {
@@ -391,7 +395,12 @@ Player.prototype.update = function(dt, camera) {
 			this.flashTimer = 0;
 			this.drawPlayer = true;
 			this.hit = false;
+			this.health--;
 		}
+	}
+	
+	if(this.health <= 0) {
+		this.dead = true;
 	}
 	
 	if(this.currentAnimation == this.PLAYER_ATTACKING_RIGHT ||
@@ -459,7 +468,13 @@ Player.prototype.draw = function(camera) {
 Player.prototype.updateAnimation = function(dt) {
 	// set animation, ordered by priority
 	if(this.facingRight) {
-		if(this.attacking) {
+		if(this.dead) {
+			if(this.currentAnimation != this.PLAYER_DYING_RIGHT) {
+				this.clearAnimation();
+				this.currentAnimation = this.PLAYER_DYING_RIGHT;
+			}
+		}
+		else if(this.attacking) {
 			if(this.currentAnimation != this.PLAYER_ATTACKING_RIGHT) {
 				this.clearAnimation();
 				this.currentAnimation = this.PLAYER_ATTACKING_RIGHT;
@@ -486,7 +501,13 @@ Player.prototype.updateAnimation = function(dt) {
 	}
 	
 	if(!this.facingRight) {
-		if(this.attacking) {
+		if(this.dead) {
+			if(this.currentAnimation != this.PLAYER_DYING_LEFT) {
+				this.clearAnimation();
+				this.currentAnimation = this.PLAYER_DYING_LEFT;
+			}
+		}
+		else if(this.attacking) {
 			if(this.currentAnimation != this.PLAYER_ATTACKING_LEFT) {
 				this.clearAnimation();
 				this.currentAnimation = this.PLAYER_ATTACKING_LEFT;
