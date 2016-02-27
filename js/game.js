@@ -52,6 +52,7 @@ function PlayState() {
 	this.enemies = [];
 	this.projectiles = [];
 	
+	this.mountains = new Background('mountains');
 }
 
 
@@ -151,6 +152,11 @@ PlayState.prototype.continueLoadingLevel = function() {
 	
 	this.projectiles.splice(0, this.projectiles.length);
 	
+	this.mountains.positionX = 0;
+	this.mountains.positionY = parseInt(this.tileMap.getObjectLayer('background').objects[0].positionY / 
+								this.tileMap.mapLayers[0].tileHeight) * this.tileMap.mapLayers[0].tileHeight - 
+								this.mountains.height;
+	
 };
 
 PlayState.prototype.update = function(dt) {
@@ -159,10 +165,14 @@ PlayState.prototype.update = function(dt) {
 		if(++this.currentLevel <= this.numLevels) {
 			console.log('loading next level: ' + this.currentLevel);
 			this.tileMap = new TileMap();
+			
+			// back up player info
 			var prevPlayer = this.player;
 			this.player = new Player();
 			this.player.health = prevPlayer.health;
 			this.player.lives = prevPlayer.lives;
+			
+			// load next level
 			var that = this;
 			this.loadNextLevel = false;
 			this.finishedLoadingLevel = false;
@@ -176,18 +186,17 @@ PlayState.prototype.update = function(dt) {
 		
 		if(this.player.positionY + this.player.dy * dt + this.player.height >= 
 		   this.player.yBounds) {
-			console.log('player dying');
 			this.player.health = 5;
 		   this.player.lives--;
 		   this.player.hit = false;
 			this.continueLoadingLevel();
 		}
-		var index = 0;
+		
 		// player attacking: add a new fireball
 		if(Key.isKeyPressed(Key.SPACE)) {
 			this.player.attacking = true;
 			this.projectiles.push(new Fireball());
-			index = this.projectiles.length - 1;
+			var index = this.projectiles.length - 1;
 			this.projectiles[index].tileMap = this.tileMap;
 			this.projectiles[index].positionX = this.player.positionX + 
 				this.player.width;
@@ -292,7 +301,8 @@ PlayState.prototype.update = function(dt) {
 			}
 		}
 		
-		// if player's life is depleted
+		// if player's life is depleted and the dying animation finished, load
+		// new level
 		if(this.player.dead) {
 			if(this.player.currentAnimation == this.player.PLAYER_DYING_RIGHT || 
 			   this.player.PLAYER_DYING_LEFT) { 
@@ -311,6 +321,9 @@ PlayState.prototype.update = function(dt) {
 PlayState.prototype.draw = function() {
     'use strict';
     clear('#655541');
+	
+	this.mountains.draw(this.camera);
+	
 	this.tileMap.draw(this.camera);
 	
 	for(var i = 0; i < this.enemies.length; ++i) {
@@ -337,7 +350,8 @@ window.onload = function() {
 		wizard: '/rise-of-oxshan/res/wizard-spritesheet.png',
 		fireball: '/rise-of-oxshan/res/fireball.png',
 		lightning: '/rise-of-oxshan/res/lightning.png',
-		heart: '/rise-of-oxshan/res/heart.png'
+		heart: '/rise-of-oxshan/res/heart.png',
+		mountains: '/rise-of-oxshan/res/mountains.png'
 	};
 	
 	loadImages(sources, startGame);
