@@ -7,6 +7,11 @@ function Projectile() {
 	this.sourceX = 0;
 }
 
+// Sets the direction of the projectile; it will go in this direction.
+// originX - x coordinate of projectile's origin
+// dirX - x coordinate of projectile's target
+// originY - y coordinate of projecitle's origin
+// dirY - y coordinate of projectile's target
 Projectile.prototype.setDirection = function(originX, dirX, originY, dirY) {
 	var distanceX = dirX - originX;
 	var distanceY = dirY - originY;
