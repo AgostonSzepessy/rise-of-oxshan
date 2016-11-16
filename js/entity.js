@@ -37,6 +37,11 @@ function Entity() {
 	this.currentAnimation = 0;
 	this.currentFrame = 0;
 	this.animations = [];
+	
+	this.topSideBlocked = false;
+	this.leftSideBlocked = false;
+	this.rightSideBlocked = false;
+	this.bottomSideBlocked = false;
 }
 
 Entity.prototype.setPosition = function(x, y) {
@@ -117,9 +122,11 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.dy = 0;
 			this.falling = false;
 			this.grounded = true;
+			this.topSideBlocked = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
+			this.topSideBlocked = false;
 		}
 	}
 	// going up
@@ -129,9 +136,11 @@ Entity.prototype.checkMapCollision = function(dt) {
 			this.tempY = (currentRow - 1) * tileLayer.tileHeight + tileLayer.tileHeight;
 			this.dy = 0;
 			this.falling = true;
+			this.bottomSideBlocked = true;
 		}
 		else {
 			this.tempY += this.dy * dt;
+			this.bottomSideBlocked = false;
 		}
 	}
 	this.getCorners(this.xDest, this.positionY);
@@ -140,9 +149,11 @@ Entity.prototype.checkMapCollision = function(dt) {
 		if(this.topLeftBlocked || this.bottomLeftBlocked) {
 			this.tempX = currentColumn * tileLayer.tileWidth;
 			this.dx = 0;
+			this.rightSideBlocked = true;
 		}
 		else {
 			this.tempX += this.dx * dt;
+			this.rightSideBlocked = false;
 		}
 	}
 	// going right; check if there are any blocks to the right of him
@@ -150,9 +161,11 @@ Entity.prototype.checkMapCollision = function(dt) {
 		if(this.topRightBlocked || this.bottomRightBlocked) {
 			this.tempX = (currentColumn + 1) * tileLayer.tileWidth - this.width;
 			this.dx = 0;
+			this.leftSideBlocked = true;
 		}
 		else {
 			this.tempX += this.dx * dt;
+			this.leftSideBlocked = false;
 		}
 	}
 	

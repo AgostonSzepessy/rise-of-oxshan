@@ -21,6 +21,7 @@
 				 "Enemy": true,
 				 "Wizard": true,
 				 "Fireball": true,
-				 "Lightning": true
+				 "Lightning": true,
+				 "Background": true
                }
 }

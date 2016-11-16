@@ -66,8 +66,36 @@
          "width":0,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":20,
+         "name":"background",
+         "objects":[
+                {
+                 "ellipse":true,
+                 "height":0,
+                 "id":7,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":168.404170008019,
+                 "y":1129.37717187918
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":50,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":5,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "properties":
     {

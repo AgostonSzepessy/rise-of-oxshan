@@ -7,6 +7,11 @@ function Projectile() {
 	this.sourceX = 0;
 }
 
+// Sets the direction of the projectile; it will go in this direction.
+// originX - x coordinate of projectile's origin
+// dirX - x coordinate of projectile's target
+// originY - y coordinate of projecitle's origin
+// dirY - y coordinate of projectile's target
 Projectile.prototype.setDirection = function(originX, dirX, originY, dirY) {
 	var distanceX = dirX - originX;
 	var distanceY = dirY - originY;
@@ -26,12 +31,11 @@ Projectile.prototype.setDirection = function(originX, dirX, originY, dirY) {
 Projectile.prototype.update = function(dt) {
 	this.checkMapCollision(dt);
 	
-	// check if bullet hit an enemy or out of bounds
-	if(this.bottomLeftBlocked || this.bottomRightBlocked || this.topLeftBlocked ||
-	   this.topRightBlocked || this.tempX < 0 || this.tempX + this.width> 
-	   this.xBounds || this.tempY < 0 || this.tempY + this.height >
-	   this.yBounds)
-		this.dead = true;   
+	// check if bullet hit an enemy or out of bounds  
+	if(this.rightSideBlocked || this.leftSideBlocked || this.topSideBlocked || 
+	   this.bottomSideBlocked || this.tempX < 0 || this.tempX + this.width > 
+	   this.xBounds || this.tempY < 0 || this.tempY + this.height > this.yBounds)
+		this.dead = true;
 	else
 		this.setPosition(this.tempX, this.tempY);
 };
