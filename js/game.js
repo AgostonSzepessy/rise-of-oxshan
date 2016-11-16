@@ -71,7 +71,7 @@ MenuState.prototype.draw = function() {
     clear('#51C6ED');
 	
 	ctx.beginPath();
-
+    
 	for(i = 0; i < 2; ++i) {
 		ctx.drawImage(this.menuTextImg, i * this.textWidth, 0, this.textWidth, this.textHeight,
 						canvasWidth / 2 - this.textWidth, canvasHeight / 2 + 30 * i, 
@@ -81,9 +81,11 @@ MenuState.prototype.draw = function() {
 						 canvasWidth / 2 - this.textWidth - this.selectorImgWidth, canvasHeight / 2 + 30 * i,
 						 this.selectorImgWidth, this.selectorImgHeight);
 		}
-	}
-	
+	}    
+    
 	ctx.closePath();
+    
+    
 };
 
 // Handles the input for this state and switches states based on it

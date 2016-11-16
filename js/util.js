@@ -9,6 +9,12 @@ var canvasHeight = 576;
 c.width = canvasWidth;
 c.height = canvasHeight;
 
+window.onkeydown = function(e) {
+    if (e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+    }
+};
+
 var clear = function(strColor) {
     'use strict';
     ctx.fillStyle = strColor;

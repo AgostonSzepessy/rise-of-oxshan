@@ -1,16 +1,22 @@
-body
-{
-    /*background-color: #273033 */
-    margin: 0px;
-    padding: 0px;
+p {
     text-align: center;
+}
+
+ul {
+    display: table;
+    margin: 0 auto;
 }
 
 canvas
 {
     outline: 0;
     border: 1px solid #000;
-
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
 /*
     padding: 0;
     margin: auto;
