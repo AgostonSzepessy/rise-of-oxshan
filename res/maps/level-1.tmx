@@ -1018,7 +1018,7 @@
   </object>
  </objectgroup>
  <objectgroup name="background">
-  <object id="7" x="168.404" y="1129.38">
+  <object id="7" x="36.404" y="1249.38">
    <ellipse/>
   </object>
  </objectgroup>

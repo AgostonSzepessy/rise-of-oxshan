@@ -29,7 +29,7 @@ function PlayState() {
     'use strict';
     GameState.call();
 	
-	clear('#ffffff');
+	clear('#7873fd');
 	this.camera = new Camera(0, 0, canvasWidth, canvasHeight);
 	this.camera.setHeight(canvasHeight);
 	this.camera.setWidth(canvasWidth);
@@ -153,10 +153,12 @@ PlayState.prototype.continueLoadingLevel = function() {
 	this.projectiles.splice(0, this.projectiles.length);
 	
 	this.mountains.positionX = 0;
-	this.mountains.positionY = parseInt(this.tileMap.getObjectLayer('background').objects[0].positionY / 
-								this.tileMap.mapLayers[0].tileHeight) * this.tileMap.mapLayers[0].tileHeight - 
-								this.mountains.height;
-	
+//	this.mountains.positionY = parseInt(this.tileMap.getObjectLayer('background').objects[0].positionY / 
+//								this.tileMap.mapLayers[0].tileHeight) * this.tileMap.mapLayers[0].tileHeight - 
+//								this.mountains.height;
+    
+    this.mountains.positionY = parseInt(this.tileMap.mapLayers[0].height * this.tileMap.mapLayers[0].tileHeight) - this.mountains.height;
+
 };
 
 PlayState.prototype.update = function(dt) {
@@ -320,8 +322,8 @@ PlayState.prototype.update = function(dt) {
 
 PlayState.prototype.draw = function() {
     'use strict';
-    clear('#655541');
-	
+    clear('#51C6ED');
+    
 	this.mountains.draw(this.camera);
 	
 	this.tileMap.draw(this.camera);
